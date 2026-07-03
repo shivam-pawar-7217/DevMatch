@@ -1,0 +1,16 @@
+repo_id,repo_name,description,url,language,stars,forks,open_issues,domain_category,avg_weekly_hours,recommended_difficulty
+1,facebook/react,A declarative efficient and flexible JavaScript library for building user interfaces.,https://github.com/facebook/react,JavaScript,203000,42000,1200,Frontend Web,15,Intermediate
+2,tiangolo/fastapi,FastAPI framework high performance easy to learn fast to code ready for production,https://github.com/tiangolo/fastapi,Python,55000,4500,500,Backend API,10,Advanced
+3,kubernetes/kubernetes,Production-Grade Container Scheduling and Management,https://github.com/kubernetes/kubernetes,Go,95000,35000,2500,DevOps/Cloud,20,Advanced
+4,freeCodeCamp/freeCodeCamp,freeCodeCamp.org open-source codebase and curriculum,https://github.com/freeCodeCamp/freeCodeCamp,JavaScript,360000,31000,280,Fullstack Web,5,Beginner
+5,docker/compose,Define and run multi-container applications with Docker,https://github.com/docker/compose,Go,28000,4500,850,DevOps/Cloud,8,Intermediate
+6,vercel/next.js,The React Framework,https://github.com/vercel/next.js,TypeScript,101000,22000,1500,Frontend Web,12,Intermediate
+7,vuejs/core,Vue.js is a progressive incrementally-adoptable JavaScript framework for building UI on the web.,https://github.com/vuejs/core,TypeScript,35000,6000,400,Frontend Web,10,Beginner
+8,django/django,The Web framework for perfectionists with deadlines.,https://github.com/django/django,Python,69000,28000,120,Backend API,15,Intermediate
+9,expressjs/express,Fast unopinionated minimalist web framework for node.,https://github.com/expressjs/express,JavaScript,59000,9000,150,Backend API,8,Beginner
+10,ansible/ansible,Ansible is a radically simple IT automation platform,https://github.com/ansible/ansible,Python,56000,23000,3000,DevOps/Cloud,15,Advanced
+11,tensorflow/tensorflow,An Open Source Machine Learning Framework for Everyone,https://github.com/tensorflow/tensorflow,Python,171000,87000,4000,AI/ML,25,Advanced
+12,pallets/flask,The Python micro framework for building web applications.,https://github.com/pallets/flask,Python,61000,15000,80,Backend API,5,Beginner
+13,hashicorp/terraform,Terraform enables you to safely and predictably create change and improve infrastructure.,https://github.com/hashicorp/terraform,Go,36000,8000,1100,DevOps/Cloud,10,Intermediate
+14,elastic/elasticsearch,Free and Open Distributed RESTful Search Engine,https://github.com/elastic/elasticsearch,Java,62000,23000,2200,Backend API,20,Advanced
+15,nestjs/nest,A progressive Node.js framework for building efficient scalable and enterprise-grade server-side applications,https://github.com/nestjs/nest,TypeScript,54000,6000,300,Backend API,10,Intermediate
