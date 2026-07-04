@@ -22,6 +22,8 @@ function App() {
   const [skills, setSkills] = useState<string[]>([])
   const [selected, setSelected] = useState<string[]>([])
   const [level, setLevel] = useState('Beginner')
+  const [domain, setDomain] = useState('Any')
+  const [hours, setHours] = useState(5)
   
   const [matches, setMatches] = useState<MatchedRepo[]>([])
   const [loading, setLoading] = useState(false)
@@ -64,7 +66,9 @@ function App() {
     try {
       const res = await axios.post(`${API_URL}/match`, {
         skills: selected,
-        level: level
+        level: level,
+        interest_domain: domain,
+        weekly_hours: hours
       })
       setMatches(res.data.matches)
     } catch (err) {
@@ -210,26 +214,63 @@ function App() {
       <div className="glass-panel">
         <div className="form-group">
           <label>1. What skills do you have?</label>
-          <div className="skills-grid">
-            {skills.map(s => (
-              <div 
-                key={s} 
-                className={`skill-pill ${selected.includes(s) ? 'active' : ''}`}
-                onClick={() => handleToggleSkill(s)}
-              >
-                {s}
-              </div>
-            ))}
+          {/* Categorized Skills for a cleaner UI */}
+          <div style={{marginBottom: '15px'}}>
+            <strong style={{color: 'var(--text-muted)', fontSize: '0.85rem'}}>LANGUAGES</strong>
+            <div className="skills-grid" style={{marginTop: '5px'}}>
+              {['JavaScript', 'TypeScript', 'Python', 'Go'].map(s => (
+                <div key={s} className={`skill-pill ${selected.includes(s) ? 'active' : ''}`} onClick={() => handleToggleSkill(s)}>{s}</div>
+              ))}
+            </div>
+          </div>
+          <div style={{marginBottom: '15px'}}>
+            <strong style={{color: 'var(--text-muted)', fontSize: '0.85rem'}}>FRONTEND</strong>
+            <div className="skills-grid" style={{marginTop: '5px'}}>
+              {['React', 'Vue', 'Next.js'].map(s => (
+                <div key={s} className={`skill-pill ${selected.includes(s) ? 'active' : ''}`} onClick={() => handleToggleSkill(s)}>{s}</div>
+              ))}
+            </div>
+          </div>
+          <div style={{marginBottom: '15px'}}>
+            <strong style={{color: 'var(--text-muted)', fontSize: '0.85rem'}}>BACKEND & INFRA</strong>
+            <div className="skills-grid" style={{marginTop: '5px'}}>
+              {['Node.js', 'FastAPI', 'PostgreSQL', 'Docker', 'Kubernetes', 'AWS', 'Git'].map(s => (
+                <div key={s} className={`skill-pill ${selected.includes(s) ? 'active' : ''}`} onClick={() => handleToggleSkill(s)}>{s}</div>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="form-group">
-          <label>2. What is your experience level?</label>
-          <select value={level} onChange={e => setLevel(e.target.value)}>
-            <option value="Beginner">Beginner</option>
-            <option value="Intermediate">Intermediate</option>
-            <option value="Advanced">Advanced</option>
-          </select>
+        <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px', marginBottom: '20px'}}>
+            <div className="form-group" style={{marginBottom: 0}}>
+              <label>2. Experience Level?</label>
+              <select value={level} onChange={e => setLevel(e.target.value)}>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
+            </div>
+            
+            <div className="form-group" style={{marginBottom: 0}}>
+              <label>3. Domain Interest?</label>
+              <select value={domain} onChange={e => setDomain(e.target.value)}>
+                <option value="Any">Any Domain</option>
+                <option value="Frontend Web">Frontend Web</option>
+                <option value="Backend API">Backend API</option>
+                <option value="Fullstack Web">Fullstack Web</option>
+                <option value="DevOps/Cloud">DevOps & Cloud</option>
+              </select>
+            </div>
+
+            <div className="form-group" style={{marginBottom: 0}}>
+              <label>4. Time Available?</label>
+              <select value={hours} onChange={e => setHours(Number(e.target.value))}>
+                <option value={2}>1-5 hrs/week</option>
+                <option value={8}>5-10 hrs/week</option>
+                <option value={15}>10-20 hrs/week</option>
+                <option value={30}>20+ hrs/week</option>
+              </select>
+            </div>
         </div>
 
         {error && <p style={{color: 'var(--red)', marginBottom: '15px'}}>{error}</p>}
