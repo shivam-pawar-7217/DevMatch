@@ -1,35 +1,93 @@
-# DevMatch 🚀
+# DevMatch: Open-Source Recommendation Engine
 
-DevMatch is a developer-to-repository matching platform designed to help developers find the perfect open-source project to contribute to based on their specific tech stack, experience level, and domain interests.
+DevMatch is a developer-to-repository matching platform that recommends the best open-source projects for you to contribute to based on your skills, experience level, and available time.
 
-## 🛠️ Tech Stack
-- **Frontend:** React, TypeScript, Vite
-- **Backend:** Python, FastAPI
-- **Database:** PostgreSQL
-- **Infrastructure:** Docker & Docker Compose
+## 1. What it does
+You input your tech stack (e.g., Python, React), your domain of interest (e.g., Backend API), and how much time you have. The system queries a database of repositories and mathematically scores them against your profile, returning the top 3 best fits along with a roadmap of what missing skills you need to learn.
 
-## 🧠 How the Matching Engine Works
-The core of DevMatch is a custom, math-based scoring algorithm (built in Python). It does not rely on simple keyword matching. 
-1. **Skill Weighting:** Repositories have required skills, each with a weight (1-3). If you have the skill, you gain those points.
-2. **Domain Bonus:** If your chosen domain (e.g., DevOps) matches the repository's core domain, you receive a flat +15% bonus.
-3. **Time Penalty:** If the repository expects a high time commitment (e.g., 20 hrs/week) but you only have 5 hours available, the algorithm applies a -10% penalty to prevent burnout.
-4. **Experience Level:** Matches you based on Beginner, Intermediate, or Advanced project difficulty.
+## 2. Why I chose this project
+I chose to build a matching system because it focuses heavily on B2B-style data relationships and deterministic logic. Unlike a generic CRUD app, a matching engine requires careful database schema design (many-to-many relationships with weights) and algorithmic scoring. I wanted to build something where the backend math actually matters and is highly explainable.
 
-*Note: The dataset powering this engine was extracted from a Kaggle dataset of top open-source GitHub repositories and baked directly into the PostgreSQL seed for offline reliability and speed.*
+## 3. What is special about it
+Instead of just checking if tags match (which is what most basic search bars do), DevMatch uses a **weighted scoring algorithm**. Repositories rank skills by importance (1 = nice to have, 3 = core framework). The system also applies mathematical penalties if you are under-committed on time, and bonuses if your domain perfectly aligns. Furthermore, it explicitly tells you which skills you are *missing* so you know exactly what to learn next.
 
-## 🐳 How to Run (Local Development)
-This project is fully containerized. You do not need to install Python, Node, or Postgres on your host machine.
+## 4. Architecture Overview
+This is a standard 3-tier architecture, fully isolated into separate Docker containers.
 
-1. Clone the repository
-2. Make sure Docker Desktop is running
-3. Run the following command in the root directory:
-```bash
-docker-compose up --build
 ```
-4. The frontend will be available at `http://localhost:3000`
-5. The backend API will be available at `http://localhost:8000`
+[ Browser (React UI) ]
+         |
+      (HTTP POST /match)
+         v
+[ FastAPI Backend (Python) ] <--- Calculates weighted scores
+         |
+      (SQL queries)
+         v
+[ PostgreSQL Database ] <--- Stores repos & skill weights
+```
 
-## 🔮 Future Roadmap
-- [ ] Connect to live GitHub API for real-time issue fetching
-- [ ] Add user authentication and saved matches
-- [ ] Implement ML-based embeddings for semantic skill matching
+## 5. Tech Stack
+| Component | Technology |
+|---|---|
+| Frontend | React, TypeScript, Vite |
+| Backend API | Python, FastAPI, Uvicorn |
+| Database | PostgreSQL |
+| Infrastructure | Docker, docker-compose |
+
+## 6. API Reference
+
+### `POST /match`
+Calculates the best repositories based on user input.
+**Request:**
+```json
+{
+  "skills": ["Python", "Docker", "PostgreSQL"],
+  "level": "Intermediate",
+  "interest_domain": "Backend API",
+  "weekly_hours": 15
+}
+```
+**Response:**
+```json
+{
+  "matches": [
+    {
+      "rank": 1,
+      "repo_name": "tiangolo/fastapi",
+      "description": "FastAPI framework...",
+      "match_percentage": 95,
+      "matched_skills": ["Python"],
+      "missing_skills": ["FastAPI"]
+    }
+  ]
+}
+```
+
+### `GET /skills`
+Fetches a flat list of all skills available in the database to populate the frontend UI.
+**Response:** `{"skills": ["Python", "React", "Docker", ...]}`
+
+### `GET /health`
+A simple health check to confirm the API is running.
+**Response:** `{"status": "ok"}`
+
+## 7. Docker Explanation
+The project is containerized using three separate services:
+1. `devmatch-frontend`: Runs the React development server on port 3000.
+2. `devmatch-backend`: Runs the FastAPI server on port 8000.
+3. `devmatch-db`: Runs the PostgreSQL database on port 5432.
+
+All containers communicate over a custom bridge network called `jtp-network`. This ensures they can resolve each other by container name. For example, the backend connects to the database using the host `db`, instead of `localhost`. The database initializes automatically by reading the seed files mounted into the `/docker-entrypoint-initdb.d/` directory.
+
+## 8. How to run
+Please refer to [INSTALL.md](INSTALL.md) for full setup and teardown instructions.
+
+## 9. Data Source Declaration
+The repository and skill data is **illustrative dummy data**. I extracted rows from a Kaggle dataset containing the top open-source GitHub repositories. To avoid slow API limits during demonstration, I cleaned this data and hardcoded it directly into the `02_seed.sql` file.
+
+## 10. AI Usage Declaration
+*Note: I used AI tools during development to assist with specific tasks as listed below:*
+- **Claude:** Helped me debug a Docker DNS issue where my backend container was trying to connect to localhost instead of the `db` service name.
+- **Claude:** Generated the 15 rows of dummy repository seed data in `02_seed.sql`. I reviewed and adjusted the data before committing.
+- **Claude:** Checked grammar in this README.
+Everything else — the schema design, the weighted scoring logic, the React component structure, and the Docker network configuration — was designed and written by me. I can explain every decision made in this project.
