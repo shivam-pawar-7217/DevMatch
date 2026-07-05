@@ -14,3 +14,13 @@ repo_id,repo_name,description,url,language,stars,forks,open_issues,domain_catego
 13,hashicorp/terraform,Terraform enables you to safely and predictably create change and improve infrastructure.,https://github.com/hashicorp/terraform,Go,36000,8000,1100,DevOps/Cloud,10,Intermediate
 14,elastic/elasticsearch,Free and Open Distributed RESTful Search Engine,https://github.com/elastic/elasticsearch,Java,62000,23000,2200,Backend API,20,Advanced
 15,nestjs/nest,A progressive Node.js framework for building efficient scalable and enterprise-grade server-side applications,https://github.com/nestjs/nest,TypeScript,54000,6000,300,Backend API,10,Intermediate
+16,sveltejs/svelte,Cybernetically enhanced web apps,https://github.com/sveltejs/svelte,TypeScript,68000,3200,450,Frontend Web,12,Intermediate
+17,remix-run/remix,Build Better Websites,https://github.com/remix-run/remix,TypeScript,24000,1800,200,Frontend Web,10,Advanced
+18,gohugoio/hugo,The world’s fastest framework for building websites.,https://github.com/gohugoio/hugo,Go,66000,6900,420,Frontend Web,8,Beginner
+19,prometheus/prometheus,The Prometheus monitoring system and time series database.,https://github.com/prometheus/prometheus,Go,48000,8100,560,DevOps/Cloud,18,Advanced
+20,grafana/grafana,The open and composable observability and data visualization platform.,https://github.com/grafana/grafana,TypeScript,55000,10500,1800,DevOps/Cloud,15,Intermediate
+21,reduxjs/redux,Predictable state container for JavaScript apps,https://github.com/reduxjs/redux,TypeScript,59000,15000,22,Frontend Web,5,Beginner
+22,tailwindcss/tailwindcss,A utility-first CSS framework for rapid UI development.,https://github.com/tailwindcss/tailwindcss,JavaScript,69000,3500,110,Frontend Web,8,Beginner
+23,redis/redis,Redis is an in-memory database that persists on disk.,https://github.com/redis/redis,C,60000,22000,450,Backend API,20,Advanced
+24,mongodb/mongo,The MongoDB Database,https://github.com/mongodb/mongo,C++,23000,5000,1200,Backend API,25,Advanced
+25,apache/kafka,Mirror of Apache Kafka,https://github.com/apache/kafka,Java,24000,12000,600,Backend API,20,Advanced

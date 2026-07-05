@@ -19,7 +19,17 @@ INSERT INTO repositories (id, name, description, github_url, difficulty_level, o
 (12, 'pallets/flask', 'The Python micro framework for building web applications.', 'https://github.com/pallets/flask', 'Beginner', 80, 'Backend API', 5),
 (13, 'hashicorp/terraform', 'Terraform enables you to safely and predictably create, change, and improve infrastructure.', 'https://github.com/hashicorp/terraform', 'Intermediate', 1100, 'DevOps/Cloud', 10),
 (14, 'elastic/elasticsearch', 'Free and Open, Distributed, RESTful Search Engine', 'https://github.com/elastic/elasticsearch', 'Advanced', 2200, 'Backend API', 20),
-(15, 'nestjs/nest', 'A progressive Node.js framework for building efficient, scalable, and enterprise-grade apps', 'https://github.com/nestjs/nest', 'Intermediate', 300, 'Backend API', 10);
+(15, 'nestjs/nest', 'A progressive Node.js framework for building efficient, scalable, and enterprise-grade apps', 'https://github.com/nestjs/nest', 'Intermediate', 300, 'Backend API', 10),
+(16, 'sveltejs/svelte', 'Cybernetically enhanced web apps', 'https://github.com/sveltejs/svelte', 'Intermediate', 450, 'Frontend Web', 12),
+(17, 'remix-run/remix', 'Build Better Websites', 'https://github.com/remix-run/remix', 'Advanced', 200, 'Frontend Web', 10),
+(18, 'gohugoio/hugo', 'The world’s fastest framework for building websites.', 'https://github.com/gohugoio/hugo', 'Beginner', 420, 'Frontend Web', 8),
+(19, 'prometheus/prometheus', 'The Prometheus monitoring system and time series database.', 'https://github.com/prometheus/prometheus', 'Advanced', 560, 'DevOps/Cloud', 18),
+(20, 'grafana/grafana', 'The open and composable observability and data visualization platform.', 'https://github.com/grafana/grafana', 'Intermediate', 1800, 'DevOps/Cloud', 15),
+(21, 'reduxjs/redux', 'Predictable state container for JavaScript apps', 'https://github.com/reduxjs/redux', 'Beginner', 22, 'Frontend Web', 5),
+(22, 'tailwindcss/tailwindcss', 'A utility-first CSS framework for rapid UI development.', 'https://github.com/tailwindcss/tailwindcss', 'Beginner', 110, 'Frontend Web', 8),
+(23, 'redis/redis', 'Redis is an in-memory database that persists on disk.', 'https://github.com/redis/redis', 'Advanced', 450, 'Backend API', 20),
+(24, 'mongodb/mongo', 'The MongoDB Database', 'https://github.com/mongodb/mongo', 'Advanced', 1200, 'Backend API', 25),
+(25, 'apache/kafka', 'Mirror of Apache Kafka', 'https://github.com/apache/kafka', 'Advanced', 600, 'Backend API', 20);
 
 INSERT INTO repository_skills (repo_id, skill_id, weight) VALUES 
 -- React
@@ -51,4 +61,24 @@ INSERT INTO repository_skills (repo_id, skill_id, weight) VALUES
 -- Elasticsearch
 (14, 7, 1),
 -- NestJS
-(15, 8, 3), (15, 10, 3);
+(15, 8, 3), (15, 10, 3),
+-- Svelte
+(16, 1, 3), (16, 8, 2),
+-- Remix
+(17, 1, 3), (17, 2, 3), (17, 8, 3),
+-- Hugo
+(18, 9, 3),
+-- Prometheus
+(19, 9, 3), (19, 5, 2), (19, 6, 2),
+-- Grafana
+(20, 1, 2), (20, 8, 3), (20, 9, 2),
+-- Redux
+(21, 1, 3), (21, 8, 3),
+-- Tailwind
+(22, 1, 1),
+-- Redis
+(23, 7, 1),
+-- Mongo
+(24, 7, 1),
+-- Kafka
+(25, 7, 1);
