@@ -2,8 +2,10 @@ from psycopg2.extras import RealDictCursor
 
 def get_top_matches(user_skills, user_level, user_hours, user_domain, conn):
     """
-    This is the core algorithm that calculates the match percentage.
-    It's rule-based (not ML). We just do math based on the weights.
+    Calculates how well a user's profile matches a repository's requirements.
+    This is a deterministic, rule-based algorithm (not ML). It uses mathematical
+    weighting, domain bonuses, and time penalties to return a score from 0 to 100,
+    along with lists of matched and missing skills.
     """
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
@@ -112,9 +114,9 @@ def get_top_matches(user_skills, user_level, user_hours, user_domain, conn):
     # sort by highest match percentage first
     results.sort(key=lambda x: x['match_percentage'], reverse=True)
     
-    # take top 3 and add rank
-    top_3 = results[:3]
-    for i, r in enumerate(top_3):
+    # take top 5 and add rank
+    top_5 = results[:5]
+    for i, r in enumerate(top_5):
         r['rank'] = i + 1
         
-    return top_3
+    return top_5
