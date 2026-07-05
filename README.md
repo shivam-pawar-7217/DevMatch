@@ -6,7 +6,7 @@ DevMatch is a developer-to-repository matching platform that recommends the best
 You input your tech stack (e.g., Python, React), your domain of interest (e.g., Backend API), and how much time you have. The system queries a database of repositories and mathematically scores them against your profile, returning the top 5 best fits along with a roadmap of what missing skills you need to learn.
 
 ## 2. Why I chose this project
-As an active open-source contributor, I know firsthand how difficult and overwhelming it can be to choose the right repository to contribute to. I have personally spent countless hours searching, comparing tech stacks, and trying to gauge the time commitment required for various projects. I built DevMatch because it is a tool I genuinely needed—a system that eliminates the guesswork and programmatically connects developers to the right projects based on their actual skills and availability.
+As an active open-source contributor, I know firsthand how difficult and overwhelming it can be to choose the right repository to contribute to. I have personally spent countless hours searching, comparing tech stacks, and trying to gauge the time commitment required for various projects. I built DevMatch because it is a tool I genuinely needed-a system that eliminates the guesswork and programmatically connects developers to the right projects based on their actual skills and availability.
 
 ## 3. What is special about it
 Instead of just checking if tags match (which is what most basic search bars do), DevMatch uses a **weighted scoring algorithm**. Repositories rank skills by importance (1 = nice to have, 3 = core framework). The system also applies mathematical penalties if you are under-committed on time, and bonuses if your domain perfectly aligns. Furthermore, it explicitly tells you which skills you are *missing* so you know exactly what to learn next.
@@ -90,4 +90,4 @@ The repository and skill data is **illustrative dummy data**. I extracted rows f
 - **Claude:** Helped me debug a Docker DNS issue where my backend container was trying to connect to localhost instead of the `db` service name.
 - **Claude:** Generated the 15 rows of dummy repository seed data in `02_seed.sql`. I reviewed and adjusted the data before committing.
 - **Claude:** Checked grammar in this README.
-Everything else — the schema design, the weighted scoring logic, the React component structure, and the Docker network configuration — was designed and written by me. I can explain every decision made in this project.
+Everything else - the schema design, the weighted scoring logic, the React component structure, and the Docker network configuration - was designed and written by me. I can explain every decision made in this project.
