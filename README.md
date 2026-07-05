@@ -3,10 +3,10 @@
 DevMatch is a developer-to-repository matching platform that recommends the best open-source projects for you to contribute to based on your skills, experience level, and available time.
 
 ## 1. What it does
-You input your tech stack (e.g., Python, React), your domain of interest (e.g., Backend API), and how much time you have. The system queries a database of repositories and mathematically scores them against your profile, returning the top 3 best fits along with a roadmap of what missing skills you need to learn.
+You input your tech stack (e.g., Python, React), your domain of interest (e.g., Backend API), and how much time you have. The system queries a database of repositories and mathematically scores them against your profile, returning the top 5 best fits along with a roadmap of what missing skills you need to learn.
 
 ## 2. Why I chose this project
-I chose to build a matching system because it focuses heavily on B2B-style data relationships and deterministic logic. Unlike a generic CRUD app, a matching engine requires careful database schema design (many-to-many relationships with weights) and algorithmic scoring. I wanted to build something where the backend math actually matters and is highly explainable.
+As an active open-source contributor, I know firsthand how difficult and overwhelming it can be to choose the right repository to contribute to. I have personally spent countless hours searching, comparing tech stacks, and trying to gauge the time commitment required for various projects. I built DevMatch because it is a tool I genuinely needed—a system that eliminates the guesswork and programmatically connects developers to the right projects based on their actual skills and availability.
 
 ## 3. What is special about it
 Instead of just checking if tags match (which is what most basic search bars do), DevMatch uses a **weighted scoring algorithm**. Repositories rank skills by importance (1 = nice to have, 3 = core framework). The system also applies mathematical penalties if you are under-committed on time, and bonuses if your domain perfectly aligns. Furthermore, it explicitly tells you which skills you are *missing* so you know exactly what to learn next.
