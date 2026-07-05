@@ -14,7 +14,7 @@ This guide explains how to use the DevMatch UI to find open-source repositories 
 
 ## Reading the Results
 
-The system will return the top 3 best-fitting repositories based on the complex weighted algorithm.
+The system will return the top 5 best-fitting repositories based on the complex weighted algorithm.
 
 - **Match Percentage:** This is a mathematical score out of 100%. It is calculated based on how many required skills you have, weighted by importance, plus bonuses for domain alignment, and penalties if you lack the required weekly hours.
 - **Matched Skills:** The skills you selected that are useful for this project.
@@ -34,5 +34,4 @@ The algorithm will likely return a repository like `tiangolo/fastapi` as a top m
 - You receive a **+15% Domain Bonus** because FastAPI is a "Backend API" project.
 - The UI will list `FastAPI` under **Missing Skills**, informing you that while you have the foundational skills, you need to learn the actual framework before contributing to that specific repo.
 
-*(UI Screenshot placeholder)*
-![DevMatch Interface Example](./frontend/public/ui-screenshot.png)
+
