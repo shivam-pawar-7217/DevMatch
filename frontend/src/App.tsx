@@ -90,7 +90,6 @@ function App() {
   }
 
   if (selectedRepo) {
-  if (selectedRepo) {
     return (
       <div className="container">
         <button className="back-btn" onClick={() => { setSelectedRepo(null); setRepoDetails(null) }}>
