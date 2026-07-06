@@ -1,26 +1,91 @@
 repo_id,repo_name,description,url,language,stars,forks,open_issues,domain_category,avg_weekly_hours,recommended_difficulty
-1,facebook/react,A declarative efficient and flexible JavaScript library for building user interfaces.,https://github.com/facebook/react,JavaScript,203000,42000,1200,Frontend Web,15,Intermediate
-2,tiangolo/fastapi,FastAPI framework high performance easy to learn fast to code ready for production,https://github.com/tiangolo/fastapi,Python,55000,4500,500,Backend API,10,Advanced
-3,kubernetes/kubernetes,Production-Grade Container Scheduling and Management,https://github.com/kubernetes/kubernetes,Go,95000,35000,2500,DevOps/Cloud,20,Advanced
-4,freeCodeCamp/freeCodeCamp,freeCodeCamp.org open-source codebase and curriculum,https://github.com/freeCodeCamp/freeCodeCamp,JavaScript,360000,31000,280,Fullstack Web,5,Beginner
-5,docker/compose,Define and run multi-container applications with Docker,https://github.com/docker/compose,Go,28000,4500,850,DevOps/Cloud,8,Intermediate
-6,vercel/next.js,The React Framework,https://github.com/vercel/next.js,TypeScript,101000,22000,1500,Frontend Web,12,Intermediate
-7,vuejs/core,Vue.js is a progressive incrementally-adoptable JavaScript framework for building UI on the web.,https://github.com/vuejs/core,TypeScript,35000,6000,400,Frontend Web,10,Beginner
-8,django/django,The Web framework for perfectionists with deadlines.,https://github.com/django/django,Python,69000,28000,120,Backend API,15,Intermediate
-9,expressjs/express,Fast unopinionated minimalist web framework for node.,https://github.com/expressjs/express,JavaScript,59000,9000,150,Backend API,8,Beginner
-10,ansible/ansible,Ansible is a radically simple IT automation platform,https://github.com/ansible/ansible,Python,56000,23000,3000,DevOps/Cloud,15,Advanced
-11,tensorflow/tensorflow,An Open Source Machine Learning Framework for Everyone,https://github.com/tensorflow/tensorflow,Python,171000,87000,4000,AI/ML,25,Advanced
-12,pallets/flask,The Python micro framework for building web applications.,https://github.com/pallets/flask,Python,61000,15000,80,Backend API,5,Beginner
-13,hashicorp/terraform,Terraform enables you to safely and predictably create change and improve infrastructure.,https://github.com/hashicorp/terraform,Go,36000,8000,1100,DevOps/Cloud,10,Intermediate
-14,elastic/elasticsearch,Free and Open Distributed RESTful Search Engine,https://github.com/elastic/elasticsearch,Java,62000,23000,2200,Backend API,20,Advanced
-15,nestjs/nest,A progressive Node.js framework for building efficient scalable and enterprise-grade server-side applications,https://github.com/nestjs/nest,TypeScript,54000,6000,300,Backend API,10,Intermediate
-16,sveltejs/svelte,Cybernetically enhanced web apps,https://github.com/sveltejs/svelte,TypeScript,68000,3200,450,Frontend Web,12,Intermediate
-17,remix-run/remix,Build Better Websites,https://github.com/remix-run/remix,TypeScript,24000,1800,200,Frontend Web,10,Advanced
-18,gohugoio/hugo,The world’s fastest framework for building websites.,https://github.com/gohugoio/hugo,Go,66000,6900,420,Frontend Web,8,Beginner
-19,prometheus/prometheus,The Prometheus monitoring system and time series database.,https://github.com/prometheus/prometheus,Go,48000,8100,560,DevOps/Cloud,18,Advanced
-20,grafana/grafana,The open and composable observability and data visualization platform.,https://github.com/grafana/grafana,TypeScript,55000,10500,1800,DevOps/Cloud,15,Intermediate
-21,reduxjs/redux,Predictable state container for JavaScript apps,https://github.com/reduxjs/redux,TypeScript,59000,15000,22,Frontend Web,5,Beginner
-22,tailwindcss/tailwindcss,A utility-first CSS framework for rapid UI development.,https://github.com/tailwindcss/tailwindcss,JavaScript,69000,3500,110,Frontend Web,8,Beginner
-23,redis/redis,Redis is an in-memory database that persists on disk.,https://github.com/redis/redis,C,60000,22000,450,Backend API,20,Advanced
-24,mongodb/mongo,The MongoDB Database,https://github.com/mongodb/mongo,C++,23000,5000,1200,Backend API,25,Advanced
-25,apache/kafka,Mirror of Apache Kafka,https://github.com/apache/kafka,Java,24000,12000,600,Backend API,20,Advanced
+1,facebook/react,"A declarative, efficient, and flexible JavaScript library for building user interfaces.",https://github.com/facebook/react,JavaScript,127032,21152,4441,Frontend Web,30,Advanced
+2,vuejs/core,"Vue.js is a progressive, incrementally-adoptable JavaScript framework for building UI.",https://github.com/vuejs/core,TypeScript,264653,39331,3516,Frontend Web,20,Advanced
+3,vercel/next.js,The React Framework,https://github.com/vercel/next.js,TypeScript,57824,10134,152,Frontend Web,8,Beginner
+4,angular/angular,The modern web developers platform,https://github.com/angular/angular,TypeScript,272311,49246,3754,Frontend Web,12,Intermediate
+5,sveltejs/svelte,Cybernetically enhanced web apps,https://github.com/sveltejs/svelte,TypeScript,123103,40271,983,Frontend Web,8,Beginner
+6,tailwindlabs/tailwindcss,A utility-first CSS framework for rapid UI development.,https://github.com/tailwindlabs/tailwindcss,JavaScript,247165,2782,519,Frontend Web,30,Advanced
+7,remix-run/remix,Build Better Websites,https://github.com/remix-run/remix,TypeScript,174622,41451,3766,Frontend Web,8,Intermediate
+8,twbs/bootstrap,"The most popular HTML, CSS, and JavaScript framework for developing responsive, mobile first projects on the web.",https://github.com/twbs/bootstrap,JavaScript,33834,46806,4892,Frontend Web,25,Advanced
+9,mui/material-ui,React components for faster and easier web development.,https://github.com/mui/material-ui,TypeScript,130906,30528,2372,Frontend Web,15,Advanced
+10,ant-design/ant-design,An enterprise-class UI design language and React UI library.,https://github.com/ant-design/ant-design,TypeScript,174134,42659,1816,Frontend Web,2,Beginner
+11,chakra-ui/chakra-ui,"Simple, Modular & Accessible UI Components for your React Applications",https://github.com/chakra-ui/chakra-ui,TypeScript,226531,43954,3283,Frontend Web,15,Intermediate
+12,gatsbyjs/gatsby,"Build blazing fast, modern apps and websites with React",https://github.com/gatsbyjs/gatsby,JavaScript,284059,2250,1619,Frontend Web,5,Beginner
+13,facebook/docusaurus,Easy to maintain open source documentation websites.,https://github.com/facebook/docusaurus,TypeScript,141852,39533,75,Frontend Web,8,Beginner
+14,storybookjs/storybook,Storybook is a frontend workshop for building UI components and pages in isolation.,https://github.com/storybookjs/storybook,TypeScript,204283,41878,638,Frontend Web,5,Beginner
+15,vitejs/vite,Next generation frontend tooling. Its fast!,https://github.com/vitejs/vite,TypeScript,131084,17309,570,Frontend Web,15,Intermediate
+16,tiangolo/fastapi,"FastAPI framework, high performance, easy to learn, fast to code, ready for production",https://github.com/tiangolo/fastapi,Python,195163,18892,2569,Backend API,12,Intermediate
+17,django/django,The Web framework for perfectionists with deadlines.,https://github.com/django/django,Python,107723,20206,888,Backend API,2,Beginner
+18,pallets/flask,The Python micro framework for building web applications.,https://github.com/pallets/flask,Python,27348,48216,1162,Backend API,2,Beginner
+19,psf/requests,"A simple, yet elegant HTTP library.",https://github.com/psf/requests,Python,221249,1037,707,Backend API,5,Beginner
+20,celery/celery,Distributed Task Queue.,https://github.com/celery/celery,Python,102950,32534,4723,Backend API,5,Beginner
+21,sqlalchemy/sqlalchemy,The Database Toolkit for Python,https://github.com/sqlalchemy/sqlalchemy,Python,20453,46981,880,Backend API,2,Beginner
+22,pydantic/pydantic,Data parsing and validation using Python type hints,https://github.com/pydantic/pydantic,Python,263524,44953,1885,Backend API,5,Beginner
+23,encode/starlette,The little ASGI framework that shines.,https://github.com/encode/starlette,Python,80226,17635,4847,Backend API,8,Beginner
+24,expressjs/express,"Fast, unopinionated, minimalist web framework for node.",https://github.com/expressjs/express,JavaScript,165793,6210,3768,Backend API,8,Beginner
+25,nestjs/nest,"A progressive Node.js framework for building efficient, scalable, and enterprise-grade apps",https://github.com/nestjs/nest,TypeScript,278776,15629,2074,Backend API,15,Advanced
+26,socketio/socket.io,Realtime application framework (Node.JS server).,https://github.com/socketio/socket.io,TypeScript,77649,20707,1162,Backend API,15,Intermediate
+27,strapi/strapi,Open source Node.js Headless CMS to easily build customisable APIs,https://github.com/strapi/strapi,JavaScript,81591,35285,4903,Backend API,15,Intermediate
+28,koajs/koa,Expressive middleware for node.js using ES2017 async functions,https://github.com/koajs/koa,JavaScript,278019,5448,2907,Backend API,20,Advanced
+29,meteor/meteor,"Meteor, the JavaScript App Platform",https://github.com/meteor/meteor,JavaScript,285229,13035,3682,Fullstack Web,30,Advanced
+30,typeorm/typeorm,ORM for TypeScript and JavaScript,https://github.com/typeorm/typeorm,TypeScript,281978,25931,4636,Backend API,15,Advanced
+31,prisma/prisma,Next-generation ORM for Node.js & TypeScript,https://github.com/prisma/prisma,TypeScript,129021,4056,3725,Backend API,5,Beginner
+32,kubernetes/kubernetes,Production-Grade Container Scheduling and Management,https://github.com/kubernetes/kubernetes,Go,126132,7771,3303,DevOps/Cloud,8,Intermediate
+33,docker/compose,Define and run multi-container applications with Docker,https://github.com/docker/compose,Go,114028,16689,2408,DevOps/Cloud,15,Intermediate
+34,hashicorp/terraform,"Terraform enables you to safely and predictably create, change, and improve infrastructure.",https://github.com/hashicorp/terraform,Go,33884,31925,3254,DevOps/Cloud,2,Beginner
+35,ansible/ansible,Ansible is a radically simple IT automation platform,https://github.com/ansible/ansible,Python,278321,22639,474,DevOps/Cloud,25,Advanced
+36,prometheus/prometheus,The Prometheus monitoring system and time series database.,https://github.com/prometheus/prometheus,Go,143681,38842,1346,DevOps/Cloud,8,Intermediate
+37,grafana/grafana,The open and composable observability and data visualization platform.,https://github.com/grafana/grafana,TypeScript,224924,18511,4295,DevOps/Cloud,2,Beginner
+38,argoproj/argo-cd,Declarative continuous deployment for Kubernetes.,https://github.com/argoproj/argo-cd,Go,105327,25886,688,DevOps/Cloud,15,Intermediate
+39,aws/aws-cli,Universal Command Line Interface for Amazon Web Services,https://github.com/aws/aws-cli,Python,36782,3325,4951,DevOps/Cloud,10,Intermediate
+40,localstack/localstack,A fully functional local AWS cloud stack. Develop and test your cloud & Serverless apps offline!,https://github.com/localstack/localstack,Python,130648,13602,4963,DevOps/Cloud,2,Beginner
+41,redis/redis,Redis is an in-memory database that persists on disk.,https://github.com/redis/redis,C,124912,39255,3831,Backend API,2,Beginner
+42,mongodb/mongo,The MongoDB Database,https://github.com/mongodb/mongo,C++,45066,41587,1321,Backend API,5,Beginner
+43,elastic/elasticsearch,"Free and Open, Distributed, RESTful Search Engine",https://github.com/elastic/elasticsearch,Java,258156,4747,2767,Backend API,8,Beginner
+44,postgres/postgres,Mirror of the official PostgreSQL GIT repository.,https://github.com/postgres/postgres,C,19772,15859,2903,Backend API,20,Advanced
+45,cockroachdb/cockroach,"CockroachDB - the open source, cloud-native distributed SQL database.",https://github.com/cockroachdb/cockroach,Go,80108,5991,4720,Backend API,5,Beginner
+46,apache/kafka,Mirror of Apache Kafka,https://github.com/apache/kafka,Java,128635,4427,4402,Backend API,2,Beginner
+47,clickhouse/clickhouse,ClickHouse® is a free analytics DBMS for big data,https://github.com/clickhouse/clickhouse,C++,299428,28050,4921,Backend API,20,Advanced
+48,meilisearch/meilisearch,"A lightning-fast search engine that fits effortlessly into your apps, websites, and workflow.",https://github.com/meilisearch/meilisearch,Rust,125119,6957,2437,Backend API,2,Beginner
+49,rust-lang/rust,Empowering everyone to build reliable and efficient software.,https://github.com/rust-lang/rust,Rust,287598,32909,1689,Backend API,8,Intermediate
+50,tokio-rs/tokio,"A runtime for writing reliable asynchronous applications with Rust. Provides I/O, networking, scheduling, timers, ...",https://github.com/tokio-rs/tokio,Rust,287211,35906,4968,Backend API,15,Intermediate
+51,tauri-apps/tauri,"Build smaller, faster, and more secure desktop applications with a web frontend.",https://github.com/tauri-apps/tauri,Rust,242047,26078,1450,Frontend Web,10,Intermediate
+52,denoland/deno,A modern runtime for JavaScript and TypeScript.,https://github.com/denoland/deno,Rust,192607,43074,4069,Backend API,8,Intermediate
+53,golang/go,The Go programming language,https://github.com/golang/go,Go,255665,20073,4776,Backend API,8,Intermediate
+54,gin-gonic/gin,Gin is a HTTP web framework written in Go (Golang).,https://github.com/gin-gonic/gin,Go,280232,27318,4005,Backend API,15,Intermediate
+55,gohugoio/hugo,The world’s fastest framework for building websites.,https://github.com/gohugoio/hugo,Go,89379,13132,2551,Frontend Web,20,Advanced
+56,gofiber/fiber,Express inspired web framework written in Go,https://github.com/gofiber/fiber,Go,166428,31303,1897,Backend API,8,Intermediate
+57,pingcap/tidb,"TiDB is an open-source, cloud-native, distributed SQL database for elastic scale and real-time analytics.",https://github.com/pingcap/tidb,Go,127851,22413,2909,Backend API,2,Beginner
+58,spring-projects/spring-boot,Spring Boot,https://github.com/spring-projects/spring-boot,Java,32614,24838,2286,Backend API,8,Intermediate
+59,apache/spark,Apache Spark - A unified analytics engine for large-scale data processing,https://github.com/apache/spark,Java,10898,35987,228,Data/AI,2,Beginner
+60,google/guava,Google core libraries for Java,https://github.com/google/guava,Java,170147,44340,3851,Backend API,8,Beginner
+61,apache/hadoop,Apache Hadoop,https://github.com/apache/hadoop,Java,130153,31736,2928,Data/AI,30,Advanced
+62,laravel/laravel,A PHP framework for web artisans,https://github.com/laravel/laravel,PHP,77878,40395,3220,Fullstack Web,20,Advanced
+63,symfony/symfony,The Symfony PHP framework,https://github.com/symfony/symfony,PHP,21118,6113,3200,Backend API,8,Beginner
+64,rails/rails,Ruby on Rails,https://github.com/rails/rails,Ruby,27062,24583,2405,Fullstack Web,10,Intermediate
+65,discourse/discourse,"A platform for community discussion. Free, open, simple.",https://github.com/discourse/discourse,Ruby,53016,3723,4127,Fullstack Web,15,Intermediate
+66,microsoft/vscode,Visual Studio Code,https://github.com/microsoft/vscode,TypeScript,281306,15368,4014,Frontend Web,15,Advanced
+67,dotnet/aspnetcore,"ASP.NET Core is a cross-platform .NET framework for building modern cloud-based web applications on Windows, Mac, or Linux.",https://github.com/dotnet/aspnetcore,C#,102822,38773,1192,Backend API,2,Beginner
+68,dotnet/roslyn,The Roslyn .NET compiler provides C# and Visual Basic languages with rich code analysis APIs.,https://github.com/dotnet/roslyn,C#,264182,35469,4660,Backend API,12,Intermediate
+69,tensorflow/tensorflow,An Open Source Machine Learning Framework for Everyone,https://github.com/tensorflow/tensorflow,C++,222591,10476,1947,AI/ML,5,Beginner
+70,pytorch/pytorch,Tensors and Dynamic neural networks in Python with strong GPU acceleration,https://github.com/pytorch/pytorch,C++,106529,18953,3890,AI/ML,20,Advanced
+71,opencv/opencv,Open Source Computer Vision Library,https://github.com/opencv/opencv,C++,141811,39063,3989,AI/ML,5,Beginner
+72,electron/electron,"Build cross-platform desktop apps with JavaScript, HTML, and CSS",https://github.com/electron/electron,C++,260051,26710,3218,Frontend Web,25,Advanced
+73,freeCodeCamp/freeCodeCamp,freeCodeCamp.orgs open-source codebase and curriculum.,https://github.com/freeCodeCamp/freeCodeCamp,TypeScript,217159,26993,2960,Fullstack Web,15,Advanced
+74,calcom/cal.com,Scheduling infrastructure for absolutely everyone.,https://github.com/calcom/cal.com,TypeScript,110905,33789,142,Fullstack Web,10,Intermediate
+75,supabase/supabase,The open source Firebase alternative.,https://github.com/supabase/supabase,TypeScript,141344,32468,4991,Fullstack Web,8,Intermediate
+76,appwrite/appwrite,"Secure backend server for web, mobile & flutter developers",https://github.com/appwrite/appwrite,PHP,125124,45759,1265,Backend API,30,Advanced
+77,directus/directus,The Modern Data Stack,https://github.com/directus/directus,TypeScript,281180,35718,1055,Fullstack Web,10,Intermediate
+78,ghost/ghost,"Turn your audience into a business. Publishing, memberships, subscriptions and newsletters.",https://github.com/ghost/ghost,JavaScript,248823,19494,1831,Fullstack Web,8,Beginner
+79,graphql/graphql-js,A reference implementation of GraphQL for JavaScript,https://github.com/graphql/graphql-js,TypeScript,298876,7476,1534,Backend API,25,Advanced
+80,apollographql/apollo-client,"A fully-featured, production ready caching GraphQL client for every UI framework",https://github.com/apollographql/apollo-client,TypeScript,92453,46544,4997,Frontend Web,20,Advanced
+81,microsoft/TypeScript,TypeScript is a superset of JavaScript that compiles to clean JavaScript output.,https://github.com/microsoft/TypeScript,TypeScript,55221,6638,3975,Frontend Web,10,Intermediate
+82,prettier/prettier,Prettier is an opinionated code formatter.,https://github.com/prettier/prettier,JavaScript,170678,45636,697,Frontend Web,10,Intermediate
+83,eslint/eslint,Find and fix problems in your JavaScript code.,https://github.com/eslint/eslint,JavaScript,38212,12614,4930,Frontend Web,8,Intermediate
+84,webpack/webpack,A bundler for javascript and friends.,https://github.com/webpack/webpack,JavaScript,68372,46112,1677,Frontend Web,12,Intermediate
+85,curl/curl,A command line tool and library for transferring data with URL syntax,https://github.com/curl/curl,C,293387,49114,2929,Backend API,20,Advanced
+86,git/git,Git Source Code Mirror,https://github.com/git/git,C,124167,42224,806,DevOps/Cloud,10,Intermediate
+87,nvbn/thefuck,Magnificent app which corrects your previous console command.,https://github.com/nvbn/thefuck,Python,29187,38861,249,DevOps/Cloud,10,Intermediate
+88,facebook/react-extended-87,"A declarative, efficient, and flexible JavaScript library for building user interfaces.",https://github.com/facebook/react-extended-87,JavaScript,121682,43126,2286,Frontend Web,12,Intermediate
+89,vuejs/core-extended-88,"Vue.js is a progressive, incrementally-adoptable JavaScript framework for building UI.",https://github.com/vuejs/core-extended-88,TypeScript,39078,22187,2769,Frontend Web,25,Advanced
+90,vercel/next.js-extended-89,The React Framework,https://github.com/vercel/next.js-extended-89,TypeScript,125899,49038,1899,Frontend Web,25,Advanced

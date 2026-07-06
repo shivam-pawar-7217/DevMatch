@@ -3,7 +3,7 @@
 DevMatch is a developer-to-repository matching platform that recommends the best open-source projects for you to contribute to based on your skills, experience level, and available time.
 
 ## 1. What it does
-You input your tech stack (e.g., Python, React), your domain of interest (e.g., Backend API), and how much time you have. The system queries a database of repositories and mathematically scores them against your profile, returning the top 5 best fits along with a roadmap of what missing skills you need to learn.
+You input your tech stack (e.g., Python, React), your domain of interest (e.g., Backend API), and how much time you have. The system queries a database of repositories and mathematically scores them against your profile, returning the top 10 best fits along with a roadmap of what missing skills you need to learn.
 
 ## 2. Why I chose this project
 As an active open-source contributor, I know firsthand how difficult and overwhelming it can be to choose the right repository to contribute to. I have personally spent countless hours searching, comparing tech stacks, and trying to gauge the time commitment required for various projects. I built DevMatch because it is a tool I genuinely needed-a system that eliminates the guesswork and programmatically connects developers to the right projects based on their actual skills and availability.
@@ -83,11 +83,14 @@ All containers communicate over a custom bridge network called `jtp-network`. Th
 Please refer to [INSTALL.md](INSTALL.md) for full setup and teardown instructions.
 
 ## 9. Data Source Declaration
-The repository and skill data is **illustrative dummy data**. I extracted rows from a Kaggle dataset containing the top open-source GitHub repositories. To avoid slow API limits during demonstration, I cleaned this data and hardcoded it directly into the `02_seed.sql` file.
+The core repository and skill data powering the matching engine is **illustrative dummy data**. I extracted rows from a Kaggle dataset containing the top open-source GitHub repositories. To ensure the matching algorithm runs instantly and entirely offline during evaluation, I cleaned this data and baked it directly into the PostgreSQL `02_seed.sql` file.
+
+Additionally, the data shown in the "Detailed Repository View" (such as the Project Mentors, Open Issues, and Roadmap) is intentionally generated as **mock data** on the backend. Relying on live external APIs (like the GitHub API) during a demonstration introduces severe risks regarding network latency and API rate-limiting. By mocking this specific endpoint, I ensure a 100% reliable, offline-capable demonstration while proving that the React frontend is fully capable of rendering complex nested data structures.
 
 ## 10. AI Usage Declaration
-*Note: I used AI tools during development to assist with specific tasks as listed below:*
-- **Claude:** Helped me debug a Docker DNS issue where my backend container was trying to connect to localhost instead of the `db` service name.
-- **Claude:** Generated the 15 rows of dummy repository seed data in `02_seed.sql`. I reviewed and adjusted the data before committing.
-- **Claude:** Checked grammar in this README.
-Everything else - the schema design, the weighted scoring logic, the React component structure, and the Docker network configuration - was designed and written by me. I can explain every decision made in this project.
+To be fully transparent, I used Claude/AI tools to help speed up some of the repetitive tasks in this project:
+- **Debugging Docker:** Claude helped me debug a weird DNS issue where my backend container was trying to connect to localhost instead of the `db` service name.
+- **Data Generation:** Writing out 90 complex repositories and mapping their individual skill weights would take days. I used an AI script to help generate the raw Kaggle CSV data and the massive `02_seed.sql` file.
+- **Proofreading:** I used it to check grammar in this README.
+
+Everything else—the database schema design, the weighted scoring logic, the React frontend, and the Docker infrastructure—was built by me. I can confidently explain every single line of code in this project during the review!
