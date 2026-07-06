@@ -218,7 +218,7 @@ function App() {
           <div style={{marginBottom: '15px'}}>
             <strong style={{color: 'var(--text-muted)', fontSize: '0.85rem'}}>LANGUAGES</strong>
             <div className="skills-grid" style={{marginTop: '5px'}}>
-              {['JavaScript', 'TypeScript', 'Python', 'Go'].map(s => (
+              {['JavaScript', 'TypeScript', 'Python', 'Go', 'Java', 'C++', 'Rust', 'Ruby', 'PHP', 'C#'].map(s => (
                 <div key={s} className={`skill-pill ${selected.includes(s) ? 'active' : ''}`} onClick={() => handleToggleSkill(s)}>{s}</div>
               ))}
             </div>
@@ -226,7 +226,7 @@ function App() {
           <div style={{marginBottom: '15px'}}>
             <strong style={{color: 'var(--text-muted)', fontSize: '0.85rem'}}>FRONTEND</strong>
             <div className="skills-grid" style={{marginTop: '5px'}}>
-              {['React', 'Vue', 'Next.js'].map(s => (
+              {['React', 'Vue', 'Next.js', 'Angular', 'Svelte', 'Tailwind', 'HTML/CSS'].map(s => (
                 <div key={s} className={`skill-pill ${selected.includes(s) ? 'active' : ''}`} onClick={() => handleToggleSkill(s)}>{s}</div>
               ))}
             </div>
@@ -234,7 +234,7 @@ function App() {
           <div style={{marginBottom: '15px'}}>
             <strong style={{color: 'var(--text-muted)', fontSize: '0.85rem'}}>BACKEND & INFRA</strong>
             <div className="skills-grid" style={{marginTop: '5px'}}>
-              {['Node.js', 'FastAPI', 'PostgreSQL', 'Docker', 'Kubernetes', 'AWS', 'Git'].map(s => (
+              {['Node.js', 'FastAPI', 'PostgreSQL', 'Docker', 'Kubernetes', 'AWS', 'Git', 'Spring Boot', 'Django', 'MongoDB', 'Redis', 'GraphQL', 'Azure', 'GCP'].map(s => (
                 <div key={s} className={`skill-pill ${selected.includes(s) ? 'active' : ''}`} onClick={() => handleToggleSkill(s)}>{s}</div>
               ))}
             </div>
