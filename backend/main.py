@@ -20,16 +20,18 @@ app.add_middleware(
 
 @app.on_event("startup")
 def on_startup():
+    """Runs when the server boots. Waits for PostgreSQL to be ready."""
     print("Backend starting up...")
-    wait_for_db() # wait for postgres container
+    wait_for_db()
 
 @app.get("/health")
 def health_check():
+    """Simple ping to check if the API is alive."""
     return {"status": "ok"}
 
 @app.get("/skills")
 def get_skills():
-    # just grabs all the skills so the frontend can render the buttons
+    """Returns all skill names from the DB so the frontend can render the selector buttons."""
     conn = get_db()
     cur = conn.cursor()
     cur.execute("SELECT name FROM skills ORDER BY name")
@@ -41,7 +43,7 @@ def get_skills():
 
 @app.post("/match", response_model=MatchResponse)
 def match_repos(req: MatchRequest):
-    # passes the user data to the math algorithm and returns top 10
+    """Takes the user's profile, runs it through the scoring math, returns top 10 repos."""
     conn = get_db()
     try:
         results = get_top_matches(req.skills, req.level, req.weekly_hours, req.interest_domain, conn)
@@ -53,8 +55,8 @@ import random
 
 @app.get("/repo/{repo_name:path}/details")
 def get_repo_details(repo_name: str):
-    # generating more realistic mock data
-    # building urls dynamically based on the repo name
+    """Returns mock detail data (mentors, issues, roadmap) for a given repo.
+    This is intentionally mocked to avoid GitHub API rate limits during demos."""
     base_url = f"https://github.com/{repo_name}"
     
     mentors = [

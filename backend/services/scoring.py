@@ -1,8 +1,8 @@
 from psycopg2.extras import RealDictCursor
 
 def get_top_matches(user_skills, user_level, user_hours, user_domain, conn):
-    # This is the core algorithm. It's rule-based math, no ML involved.
-    # We calculate base score from weights, then add/subtract domain and level bonuses.
+    """Scores all repos against the user's profile using weighted skill matching,
+    level bonuses, domain alignment, and time penalties. Returns top 10 results."""
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
     # Grab all repos and their skills in one big query to avoid multiple round trips
