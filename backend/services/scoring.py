@@ -1,12 +1,8 @@
 from psycopg2.extras import RealDictCursor
 
 def get_top_matches(user_skills, user_level, user_hours, user_domain, conn):
-    """
-    Calculates how well a user's profile matches a repository's requirements.
-    This is a deterministic, rule-based algorithm (not ML). It uses mathematical
-    weighting, domain bonuses, and time penalties to return a score from 0 to 100,
-    along with lists of matched and missing skills.
-    """
+    # This is the core algorithm. It's rule-based math, no ML involved.
+    # We calculate base score from weights, then add/subtract domain and level bonuses.
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
     # Grab all repos and their skills in one big query to avoid multiple round trips
@@ -57,9 +53,9 @@ def get_top_matches(user_skills, user_level, user_hours, user_domain, conn):
             else:
                 miss_skills.append(skill)
                 
-        # base percentage from skills
+        # base percentage from skills (max 65% of total score)
         if max_score > 0:
-            raw_pct = (user_score / max_score) * 100
+            raw_pct = (user_score / max_score) * 65
         else:
             raw_pct = 0
             
@@ -111,12 +107,12 @@ def get_top_matches(user_skills, user_level, user_hours, user_domain, conn):
             'missing_skills': miss_skills
         })
         
-    # sort by highest match percentage first
-    results.sort(key=lambda x: x['match_percentage'], reverse=True)
+    # sort by highest match percentage first, then break ties by number of open issues
+    results.sort(key=lambda x: (x['match_percentage'], x['open_issues_count']), reverse=True)
     
-    # take top 5 and add rank
-    top_5 = results[:5]
-    for i, r in enumerate(top_5):
+    # take top 10 and add rank
+    top_10 = results[:10]
+    for i, r in enumerate(top_10):
         r['rank'] = i + 1
         
-    return top_5
+    return top_10

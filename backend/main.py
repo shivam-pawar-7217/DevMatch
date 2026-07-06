@@ -29,10 +29,7 @@ def health_check():
 
 @app.get("/skills")
 def get_skills():
-    """ 
-    Fetches all available skills from the database to populate the frontend selection UI.
-    Returns a simple flat list of strings.
-    """
+    # just grabs all the skills so the frontend can render the buttons
     conn = get_db()
     cur = conn.cursor()
     cur.execute("SELECT name FROM skills ORDER BY name")
@@ -44,10 +41,7 @@ def get_skills():
 
 @app.post("/match", response_model=MatchResponse)
 def match_repos(req: MatchRequest):
-    """
-    Receives the user's tech profile, passes it to the scoring algorithm,
-    and returns the top 3 repository matches along with missing skills.
-    """
+    # passes the user data to the math algorithm and returns top 10
     conn = get_db()
     try:
         results = get_top_matches(req.skills, req.level, req.weekly_hours, req.interest_domain, conn)
@@ -67,7 +61,8 @@ def get_repo_details(repo_name: str):
         {"name": "Evan You", "profile": "https://github.com/yyx990803"},
         {"name": "Dan Abramov", "profile": "https://github.com/gaearon"},
         {"name": "Linus Torvalds", "profile": "https://github.com/torvalds"},
-        {"name": "Pawar-san", "profile": "https://github.com/shivam-pawar-7217"}
+        {"name": "Sebastián Ramírez", "profile": "https://github.com/tiangolo"},
+        {"name": "Guillermo Rauch", "profile": "https://github.com/rauchg"}
     ]
     random.shuffle(mentors)
     
