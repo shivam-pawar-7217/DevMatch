@@ -31,12 +31,11 @@ def get_top_matches(user_skills, user_level, user_hours, user_domain, conn):
         
     cur.close()
 
-    results = []
+    scored_candidates = []
     
-    # Loop through each repo and score it
-    for rid, data in repos.items():
-        repo_info = data['info']
-        req_skills = data['req_skills']
+    for rid, repo_context in repos.items():
+        repo_info = repo_context['info']
+        req_skills = repo_context['req_skills']
         
         # calculate max possible score for this specific repo
         max_score = sum(req_skills.values())
@@ -53,11 +52,11 @@ def get_top_matches(user_skills, user_level, user_hours, user_domain, conn):
             else:
                 miss_skills.append(skill)
                 
-        # base percentage from skills (max 65% of total score)
-        if max_score > 0:
-            raw_pct = (user_score / max_score) * 65
-        else:
-            raw_pct = 0
+        # If a repo somehow has 0 required skills mapped in the DB, it shouldn't be matched
+        if max_score == 0:
+            continue
+
+        raw_pct = (user_score / max_score) * 65
             
         # Add a bonus if their experience level matches the repo
         # Beginner=0, Intermediate=1, Advanced=2
@@ -95,7 +94,7 @@ def get_top_matches(user_skills, user_level, user_hours, user_domain, conn):
         # Cap it at 100% and ensure it doesn't go below 0
         final_pct = max(min(int(raw_pct + level_bonus + domain_bonus + time_penalty), 100), 0)
         
-        results.append({
+        scored_candidates.append({
             'repo_name': repo_info['name'],
             'description': repo_info['description'],
             'github_url': repo_info['github_url'],
@@ -107,11 +106,9 @@ def get_top_matches(user_skills, user_level, user_hours, user_domain, conn):
             'missing_skills': miss_skills
         })
         
-    # sort by highest match percentage first, then break ties by number of open issues
-    results.sort(key=lambda x: (x['match_percentage'], x['open_issues_count']), reverse=True)
+    scored_candidates.sort(key=lambda x: (x['match_percentage'], x['open_issues_count']), reverse=True)
     
-    # take top 10 and add rank
-    top_10 = results[:10]
+    top_10 = scored_candidates[:10]
     for i, r in enumerate(top_10):
         r['rank'] = i + 1
         

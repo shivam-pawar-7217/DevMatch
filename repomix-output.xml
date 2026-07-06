@@ -1,0 +1,1361 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: frontend/src/index.css, frontend/Dockerfile, backend/Dockerfile, backend/main.py, backend/requirements.txt, db/02_seed.sql, README.md, db/01_schema.sql, frontend/src/App.tsx, docker-compose.yml, backend/services/scoring.py, backend/models/schemas.py, backend/database.py, .gitignore
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.gitignore
+backend/database.py
+backend/Dockerfile
+backend/main.py
+backend/models/schemas.py
+backend/requirements.txt
+backend/services/scoring.py
+db/01_schema.sql
+db/02_seed.sql
+docker-compose.yml
+frontend/Dockerfile
+frontend/src/App.tsx
+frontend/src/index.css
+README.md
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".gitignore">
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+
+# Node
+node_modules/
+dist/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.log
+
+# Project docs (personal, not for submission)
+DEVMATCH_COMPLETE_GUIDELINES.md
+Recruitment_project_-_Project_2026 .docx
+</file>
+
+<file path="docker-compose.yml">
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: devmatch-db
+    environment:
+      POSTGRES_USER: devmatch_user
+      POSTGRES_PASSWORD: devmatch_pass
+      POSTGRES_DB: devmatch_db
+    volumes:
+      # This pulls in the 01_schema.sql and 02_seed.sql
+      - ./db:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - jtp-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devmatch_user -d devmatch_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: devmatch-backend
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: devmatch_db
+      DB_USER: devmatch_user
+      DB_PASSWORD: devmatch_pass
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - jtp-network
+
+  frontend:
+    build: ./frontend
+    container_name: devmatch-frontend
+    ports:
+      - "3000:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - jtp-network
+
+volumes:
+  pgdata:
+
+networks:
+  jtp-network:
+    driver: bridge
+</file>
+
+<file path="frontend/Dockerfile">
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+RUN npm install
+
+COPY . .
+
+EXPOSE 5173
+
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+</file>
+
+<file path="frontend/src/App.tsx">
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { Search, Globe, AlertCircle, CheckCircle2, Star, Target } from 'lucide-react'
+
+// types
+interface MatchedRepo {
+  rank: number
+  repo_name: string
+  description: string
+  github_url: string
+  difficulty_level: string
+  open_issues_count: number
+  match_percentage: number
+  level_fit: string
+  matched_skills: string[]
+  missing_skills: string[]
+}
+
+const API_URL = 'http://localhost:8000'
+
+function App() {
+  const [skills, setSkills] = useState<string[]>([])
+  const [selected, setSelected] = useState<string[]>([])
+  const [level, setLevel] = useState('Beginner')
+  const [domain, setDomain] = useState('Any')
+  const [hours, setHours] = useState(5)
+  
+  const [matches, setMatches] = useState<MatchedRepo[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const [selectedRepo, setSelectedRepo] = useState<MatchedRepo | null>(null)
+  const [repoDetails, setRepoDetails] = useState<any>(null)
+  const [detailsLoading, setDetailsLoading] = useState(false)
+
+  // fetch skills on load
+  useEffect(() => {
+    // using a dummy list if backend isn't running yet so we can test the UI!
+    // TODO: remove fallback once backend is up
+    axios.get(`${API_URL}/skills`)
+      .then(res => setSkills(res.data.skills))
+      .catch(err => {
+        console.warn('Backend not running, using dummy skills for UI testing')
+        setSkills(['Python', 'JavaScript', 'React', 'Docker', 'PostgreSQL', 'Node.js', 'FastAPI', 'AWS', 'Kubernetes', 'TypeScript'])
+      })
+  }, [])
+
+  const handleToggleSkill = (skill: string) => {
+    if (selectedRepo) return // disable if viewing details
+    if (selected.includes(skill)) {
+      setSelected(selected.filter(s => s !== skill))
+    } else {
+      setSelected([...selected, skill])
+    }
+  }
+
+  const findMatches = async () => {
+    if (selected.length === 0) {
+      setError('Pick at least one skill first')
+      return
+    }
+    
+    setError('')
+    setLoading(true)
+    
+    try {
+      const res = await axios.post(`${API_URL}/match`, {
+        skills: selected,
+        level: level,
+        interest_domain: domain,
+        weekly_hours: hours
+      })
+      setMatches(res.data.matches)
+    } catch (err) {
+      console.error(err)
+      setError('Could not connect to backend. Make sure it is running!')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const viewDetails = async (repo: MatchedRepo) => {
+     setSelectedRepo(repo)
+    setDetailsLoading(true)
+     try{
+         // fetch mock details
+       const res = await axios.get(`${API_URL}/repo/${encodeURIComponent(repo.repo_name)}/details`)
+       setRepoDetails(res.data)
+     }catch(e){
+         console.error("error fetching details", e)
+     }finally{
+         setDetailsLoading(false)
+     }
+  }
+
+  // If a repo is selected, show the detailed view takeover!
+  if (selectedRepo) {
+    return (
+      <div className="container">
+        <button className="back-btn" onClick={() => { setSelectedRepo(null); setRepoDetails(null) }}>
+          ← Back to Matches
+        </button>
+
+        <div className="detail-header">
+           <h1>{selectedRepo.repo_name}</h1>
+           <p>{selectedRepo.description}</p>
+           
+           <div className="match-banner">
+              <h2>You are a {selectedRepo.match_percentage}% Match!</h2>
+              <p>Why this is a fit: You have {selectedRepo.matched_skills.join(", ")} which are core to this project.</p>
+           </div>
+        </div>
+
+        {detailsLoading ? (
+            <div style={{textAlign: 'center', marginTop: '50px'}}>Loading repo analysis...</div>
+        ) : repoDetails ? (
+            <div className="details-grid">
+               
+               <div className="detail-card">
+                  <h3>🚀 Contribution Roadmap</h3>
+                  <ul className="roadmap-list">
+                     {repoDetails.roadmap.map((step: string, i: number) => (
+                        <li key={i}>{step}</li>
+                     ))}
+                  </ul>
+                  <div style={{marginTop: '20px', marginBottom: '15px'}}>
+                     <strong>Setup Complexity:</strong> <span style={{color: 'var(--yellow)'}}>{repoDetails.setup_complexity}</span>
+                  </div>
+                  
+                  <h4>💬 Community Channels</h4>
+                  <div className="channels-list" style={{display:'flex', gap:'10px', marginTop:'10px'}}>
+                      {repoDetails.channels.map((ch: any) => (
+                          <a key={ch.name} href={ch.url} target="_blank" rel="noreferrer" className="channel-link">
+                              {ch.name}
+                          </a>
+                      ))}
+                  </div>
+               </div>
+
+               <div className="detail-card">
+                   <h3>🐛 Project Issues</h3>
+                   
+                   {/* We group them by difficulty */}
+                   <div style={{marginBottom: '15px'}}>
+                       <strong style={{color: 'var(--green)'}}>Good First Issues</strong>
+                       <div className="issues-list" style={{marginTop: '5px'}}>
+                          {repoDetails.issues.filter((i:any) => i.difficulty === "Beginner").map((iss: any) => (
+                              <a key={iss.id} href={iss.url} target="_blank" rel="noreferrer" className="issue-item link">
+                                 <span className="issue-id">#{iss.id}</span>
+                                 <span className="issue-title">{iss.title}</span>
+                              </a>
+                          ))}
+                       </div>
+                   </div>
+
+                   <div style={{marginBottom: '15px'}}>
+                       <strong style={{color: 'var(--yellow)'}}>Intermediate Issues</strong>
+                       <div className="issues-list" style={{marginTop: '5px'}}>
+                          {repoDetails.issues.filter((i:any) => i.difficulty === "Intermediate").map((iss: any) => (
+                              <a key={iss.id} href={iss.url} target="_blank" rel="noreferrer" className="issue-item link">
+                                 <span className="issue-id">#{iss.id}</span>
+                                 <span className="issue-title">{iss.title}</span>
+                              </a>
+                          ))}
+                       </div>
+                   </div>
+                   
+                   <div>
+                       <strong style={{color: 'var(--red)'}}>Advanced Issues</strong>
+                       <div className="issues-list" style={{marginTop: '5px'}}>
+                          {repoDetails.issues.filter((i:any) => i.difficulty === "Advanced").map((iss: any) => (
+                              <a key={iss.id} href={iss.url} target="_blank" rel="noreferrer" className="issue-item link">
+                                 <span className="issue-id">#{iss.id}</span>
+                                 <span className="issue-title">{iss.title}</span>
+                              </a>
+                          ))}
+                       </div>
+                   </div>
+
+               </div>
+
+               <div className="detail-card" style={{gridColumn: '1 / -1'}}>
+                   <h3>👥 Project Leaders & Mentors</h3>
+                   <div className="mentors-list">
+                       {repoDetails.mentors.map((m: any) => (
+                           <a key={m.name} href={m.profile} target="_blank" rel="noreferrer" className="mentor-chip link">
+                               🧑‍💻 {m.name}
+                           </a>
+                       ))}
+                   </div>
+               </div>
+
+               <div className="detail-card" style={{gridColumn: '1 / -1', background: 'transparent', border: 'none', padding: 0}}>
+                    <a href={selectedRepo.github_url} target="_blank" rel="noreferrer" className="submit-btn" style={{textDecoration:'none', display:'block', textAlign:'center'}}>
+                       Go to GitHub Repository
+                    </a>
+               </div>
+
+            </div>
+        ) : (
+            <p>Could not load details.</p>
+        )}
+      </div>
+    )
+  }
+
+  return (
+    <div className="container">
+      <div className="header">
+        <h1>DevMatch</h1>
+        <p>Find your perfect open-source project based on your tech stack</p>
+      </div>
+
+      <div className="glass-panel">
+        <div className="form-group">
+          <label>1. What skills do you have?</label>
+          {/* Categorized Skills for a cleaner UI */}
+          <div style={{marginBottom: '15px'}}>
+            <strong style={{color: 'var(--text-muted)', fontSize: '0.85rem'}}>LANGUAGES</strong>
+            <div className="skills-grid" style={{marginTop: '5px'}}>
+              {['JavaScript', 'TypeScript', 'Python', 'Go'].map(s => (
+                <div key={s} className={`skill-pill ${selected.includes(s) ? 'active' : ''}`} onClick={() => handleToggleSkill(s)}>{s}</div>
+              ))}
+            </div>
+          </div>
+          <div style={{marginBottom: '15px'}}>
+            <strong style={{color: 'var(--text-muted)', fontSize: '0.85rem'}}>FRONTEND</strong>
+            <div className="skills-grid" style={{marginTop: '5px'}}>
+              {['React', 'Vue', 'Next.js'].map(s => (
+                <div key={s} className={`skill-pill ${selected.includes(s) ? 'active' : ''}`} onClick={() => handleToggleSkill(s)}>{s}</div>
+              ))}
+            </div>
+          </div>
+          <div style={{marginBottom: '15px'}}>
+            <strong style={{color: 'var(--text-muted)', fontSize: '0.85rem'}}>BACKEND & INFRA</strong>
+            <div className="skills-grid" style={{marginTop: '5px'}}>
+              {['Node.js', 'FastAPI', 'PostgreSQL', 'Docker', 'Kubernetes', 'AWS', 'Git'].map(s => (
+                <div key={s} className={`skill-pill ${selected.includes(s) ? 'active' : ''}`} onClick={() => handleToggleSkill(s)}>{s}</div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px', marginBottom: '20px'}}>
+            <div className="form-group" style={{marginBottom: 0}}>
+              <label>2. Experience Level?</label>
+              <select value={level} onChange={e => setLevel(e.target.value)}>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
+            </div>
+            
+            <div className="form-group" style={{marginBottom: 0}}>
+              <label>3. Domain Interest?</label>
+              <select value={domain} onChange={e => setDomain(e.target.value)}>
+                <option value="Any">Any Domain</option>
+                <option value="Frontend Web">Frontend Web</option>
+                <option value="Backend API">Backend API</option>
+                <option value="Fullstack Web">Fullstack Web</option>
+                <option value="DevOps/Cloud">DevOps & Cloud</option>
+              </select>
+            </div>
+
+            <div className="form-group" style={{marginBottom: 0}}>
+              <label>4. Time Available?</label>
+              <select value={hours} onChange={e => setHours(Number(e.target.value))}>
+                <option value={2}>1-5 hrs/week</option>
+                <option value={8}>5-10 hrs/week</option>
+                <option value={15}>10-20 hrs/week</option>
+                <option value={30}>20+ hrs/week</option>
+              </select>
+            </div>
+        </div>
+
+        {error && <p style={{color: 'var(--red)', marginBottom: '15px'}}>{error}</p>}
+
+        <button 
+          className="submit-btn" 
+          onClick={findMatches} 
+          disabled={loading}
+        >
+          {loading ? 'Searching...' : <><Search size={20} /> Find Repository Matches</>}
+        </button>
+      </div>
+
+      {matches.length > 0 && (
+        <div className="results">
+          <h2 style={{marginBottom: '20px', color: 'var(--text-main)'}}>Top Matches</h2>
+          
+          {matches.map(repo => (
+            <div key={repo.rank} className="repo-card" onClick={() => viewDetails(repo)} style={{cursor: 'pointer'}}>
+              <div className="repo-header">
+                <div>
+                  <span className="repo-name">
+                    <Globe size={18} style={{display: 'inline', marginRight: '8px', verticalAlign: 'text-bottom'}}/>
+                    {repo.rank}. {repo.repo_name}
+                  </span>
+                  <p className="repo-desc">{repo.description}</p>
+                </div>
+                <div className="score">
+                  <h3 className={repo.match_percentage >= 80 ? 'high' : repo.match_percentage >= 50 ? 'mid' : 'low'}>
+                    {repo.match_percentage}%
+                  </h3>
+                  <span style={{fontSize: '0.8rem', color: 'var(--text-muted)'}}>Match Score</span>
+                </div>
+              </div>
+
+              <div className="stats">
+                <div className="stat-item"><Star size={16} /> {repo.open_issues_count} issues</div>
+                <div className="stat-item"><Target size={16} /> {repo.difficulty_level}</div>
+                <div className="stat-item"><AlertCircle size={16} /> {repo.level_fit}</div>
+              </div>
+
+              <div className="skills-breakdown">
+                {repo.matched_skills.length > 0 && (
+                  <div>
+                    <div className="tag-label" style={{marginBottom: '5px'}}>Skills you matched:</div>
+                    <div className="tags-container">
+                      {repo.matched_skills.map(s => (
+                        <span key={s} className="tag have"><CheckCircle2 size={12} style={{display: 'inline', marginRight: '4px'}}/>{s}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {repo.missing_skills.length > 0 && (
+                  <div style={{marginTop: '10px'}}>
+                    <div className="tag-label" style={{marginBottom: '5px'}}>Skills to learn:</div>
+                    <div className="tags-container">
+                      {repo.missing_skills.map(s => (
+                        <span key={s} className="tag missing">{s}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default App
+</file>
+
+<file path="frontend/src/index.css">
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-color: #0b1120;
+  --card-bg: rgba(30, 41, 59, 0.7);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --green: #10b981;
+  --yellow: #f59e0b;
+  --red: #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  line-height: 1.5;
+  min-height: 100vh;
+  /* cool gradient background */
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(225,39%,30%,0.2) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(339,49%,30%,0.1) 0, transparent 50%);
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  background: linear-gradient(to right, #60a5fa, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  color: var(--text-muted);
+}
+
+/* Glass panel for forms and stuff */
+.glass-panel {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* skill pills */
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skill-pill {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.skill-pill:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.skill-pill.active {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* dropdown */
+select {
+  width: 100%;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: white;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+select:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+select option {
+  background-color: var(--bg-color);
+}
+
+/* button */
+button.submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  transition: 0.2s;
+}
+
+button.submit-btn:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+button.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* results */
+.repo-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.repo-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.repo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.repo-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #60a5fa;
+  text-decoration: none;
+}
+
+.repo-name:hover {
+  text-decoration: underline;
+}
+
+.repo-desc {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 15px;
+}
+
+.score {
+  text-align: right;
+}
+
+.score h3 {
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+.score .high { color: var(--green); }
+.score .mid { color: var(--yellow); }
+.score .low { color: var(--red); }
+
+.stats {
+  display: flex;
+  gap: 20px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 15px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* tags */
+.skills-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 15px;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.tag.have {
+  background: rgba(16, 185, 129, 0.1);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.tag.missing {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.tag-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* --- Detailed View Styles --- */
+
+.back-btn {
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+.back-btn:hover {
+  color: white;
+}
+
+.detail-header {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+}
+
+.detail-header h1 {
+  margin-bottom: 10px;
+  color: #60a5fa;
+}
+
+.match-banner {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.match-banner h2 {
+  color: #34d399;
+  margin-bottom: 5px;
+  font-size: 1.2rem;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.detail-card {
+  background: var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.detail-card h3 {
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+  color: white;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 10px;
+}
+
+.roadmap-list {
+  padding-left: 20px;
+  color: var(--text-muted);
+}
+.roadmap-list li {
+  margin-bottom: 8px;
+}
+
+.issues-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.issue-item {
+  background: rgba(0,0,0,0.2);
+  padding: 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text-main);
+  transition: 0.2s;
+  border: 1px solid transparent;
+}
+
+.issue-item.link:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.1);
+  transform: translateX(2px);
+}
+
+.issue-id {
+  color: #60a5fa;
+  font-weight: bold;
+}
+
+.issue-title {
+  flex-grow: 1;
+  font-size: 0.9rem;
+}
+
+.mentor-chip {
+  background: rgba(255,255,255,0.1);
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  color: white;
+  transition: 0.2s;
+  border: 1px solid transparent;
+}
+
+.mentor-chip.link:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: #3b82f6;
+}
+
+.channel-link {
+  background: rgba(255,255,255,0.05);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: #c084fc;
+  text-decoration: none;
+  font-size: 0.85rem;
+  border: 1px solid rgba(192, 132, 252, 0.2);
+  transition: 0.2s;
+}
+
+.channel-link:hover {
+  background: rgba(192, 132, 252, 0.1);
+}
+</file>
+
+<file path="backend/database.py">
+import os
+import time
+import psycopg2
+from psycopg2.extras import RealDictCursor
+
+def get_db():
+    """ Connect to postgres using env vars from docker """
+    return psycopg2.connect(
+        host=os.environ.get("DB_HOST", "localhost"),
+        port=os.environ.get("DB_PORT", "5432"),
+        database=os.environ.get("DB_NAME", "devmatch_db"),
+        user=os.environ.get("DB_USER", "devmatch_user"),
+        password=os.environ.get("DB_PASSWORD", "devmatch_pass")
+    )
+
+def wait_for_db():
+    """ Docker sometimes starts backend before postgres is fully up. We retry a few times. """
+    print("Connecting to database...")
+    for i in range(10):
+        try:
+            conn = get_db()
+            conn.close()
+            print("DB connected!")
+            return
+        except Exception as e:
+            print(f"DB not ready yet... waiting 2 secs. Attempt {i+1}/10")
+            time.sleep(2)
+    
+    # if we get here, things are broken
+    raise Exception("Could not connect to DB. Is the docker container running?")
+</file>
+
+<file path="backend/Dockerfile">
+FROM python:3.10-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+</file>
+
+<file path="backend/main.py">
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+
+# local imports
+from database import wait_for_db, get_db
+from models.schemas import MatchRequest, MatchResponse
+from services.scoring import get_top_matches
+
+app = FastAPI(title="DevMatch Backend")
+
+# We need CORS so React on port 3000 can talk to this API
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # allowing everything for dev
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.on_event("startup")
+def on_startup():
+    print("Backend starting up...")
+    wait_for_db() # wait for postgres container
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
+@app.get("/skills")
+def get_skills():
+    """ Fetch all skill names to populate the UI """
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT name FROM skills ORDER BY name")
+    # flatten list of tuples to simple list
+    skills = [row[0] for row in cur.fetchall()]
+    cur.close()
+    conn.close()
+    return {"skills": skills}
+
+@app.post("/match", response_model=MatchResponse)
+def match_repos(req: MatchRequest):
+    """ The main matching endpoint """
+    conn = get_db()
+    try:
+        results = get_top_matches(req.skills, req.level, req.weekly_hours, req.interest_domain, conn)
+        return {"matches": results}
+    finally:
+        conn.close() # always close db connections
+
+import random
+
+@app.get("/repo/{repo_name:path}/details")
+def get_repo_details(repo_name: str):
+    # generating more realistic mock data
+    # building urls dynamically based on the repo name
+    base_url = f"https://github.com/{repo_name}"
+    
+    mentors = [
+        {"name": "Evan You", "profile": "https://github.com/yyx990803"},
+        {"name": "Dan Abramov", "profile": "https://github.com/gaearon"},
+        {"name": "Linus Torvalds", "profile": "https://github.com/torvalds"},
+        {"name": "Pawar-san", "profile": "https://github.com/shivam-pawar-7217"}
+    ]
+    random.shuffle(mentors)
+    
+    # generate some random issues and give them the real repo link format
+    def make_issue(title, diff):
+        issue_id = random.randint(1000, 9999)
+        return {
+            "id": issue_id, 
+            "title": title, 
+            "difficulty": diff,
+            "url": f"{base_url}/issues/{issue_id}"
+        }
+        
+    issues = [
+        make_issue("Update documentation for API endpoints", "Beginner"),
+        make_issue("Fix typo in README", "Beginner"),
+        make_issue("Refactor state management", "Intermediate"),
+        make_issue("Add unit tests for utils", "Beginner"),
+        make_issue("Implement new caching strategy", "Advanced"),
+        make_issue("Fix memory leak in core module", "Advanced"),
+        make_issue("Migrate to new database schema", "Intermediate")
+    ]
+    
+    random.shuffle(issues)
+    selected_issues = issues[:5] # grab 5 random issues
+    
+    # fake complexity
+    setup_complexity = random.choice(["Easy: npm install && npm start", "Medium: requires docker compose", "Hard: K8s cluster needed"])
+    
+    return {
+        "repo_name": repo_name,
+        "mentors": mentors[:2], # grab 2 random mentors
+        "issues": selected_issues,
+        "setup_complexity": setup_complexity,
+        "roadmap": [
+            "Fork the repository and clone it locally",
+            "Read the CONTRIBUTING.md file",
+            "Set up the local development environment",
+            "Pick a good first issue and start hacking!"
+        ],
+        "channels": [
+            {"name": "Discord", "url": "https://discord.com/"},
+            {"name": "Twitter", "url": "https://twitter.com/"}
+        ]
+    }
+
+if __name__ == "__main__":
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=8000, reload=True)
+</file>
+
+<file path="backend/models/schemas.py">
+from pydantic import BaseModel
+from typing import List
+
+# What we expect from the React frontend
+class MatchRequest(BaseModel):
+    skills: List[str]
+    level: str
+    weekly_hours: int = 5
+    interest_domain: str = "Any"
+
+# How we format one repository result
+class RepoResult(BaseModel):
+    rank: int
+    repo_name: str = ""
+    description: str = ""
+    github_url: str = ""
+    difficulty_level: str = ""
+    open_issues_count: int = 0
+    match_percentage: int = 0
+    level_fit: str = ""
+    matched_skills: List[str] = []
+    missing_skills: List[str] = []
+
+class MatchResponse(BaseModel):
+    matches: List[RepoResult]
+</file>
+
+<file path="backend/requirements.txt">
+fastapi==0.115.0
+uvicorn==0.30.0
+psycopg2-binary==2.9.9
+pydantic==2.9.0
+</file>
+
+<file path="backend/services/scoring.py">
+from psycopg2.extras import RealDictCursor
+
+def get_top_matches(user_skills, user_level, user_hours, user_domain, conn):
+    """
+    This is the core algorithm that calculates the match percentage.
+    It's rule-based (not ML). We just do math based on the weights.
+    """
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    
+    # Grab all repos and their skills in one big query to avoid multiple round trips
+    q = '''
+        SELECT 
+            r.id, r.name, r.description, r.github_url, r.difficulty_level, r.open_issues_count,
+            r.domain, r.expected_weekly_hours,
+            s.name as skill_name, rs.weight
+        FROM repositories r
+        JOIN repository_skills rs ON r.id = rs.repo_id
+        JOIN skills s ON rs.skill_id = s.id
+    '''
+    cur.execute(q)
+    rows = cur.fetchall()
+    
+    # Group the skills by repo so it's easier to process
+    repos = {}
+    for r in rows:
+        rid = r['id']
+        if rid not in repos:
+            repos[rid] = {
+                'info': r,
+                'req_skills': {} # skill_name -> weight
+            }
+        repos[rid]['req_skills'][r['skill_name']] = r['weight']
+        
+    cur.close()
+
+    results = []
+    
+    # Loop through each repo and score it
+    for rid, data in repos.items():
+        repo_info = data['info']
+        req_skills = data['req_skills']
+        
+        # calculate max possible score for this specific repo
+        max_score = sum(req_skills.values())
+        user_score = 0
+        
+        have_skills = []
+        miss_skills = []
+        
+        # compare what repo needs vs what user has
+        for skill, weight in req_skills.items():
+            if skill in user_skills:
+                user_score += weight
+                have_skills.append(skill)
+            else:
+                miss_skills.append(skill)
+                
+        # base percentage from skills
+        if max_score > 0:
+            raw_pct = (user_score / max_score) * 100
+        else:
+            raw_pct = 0
+            
+        # Add a bonus if their experience level matches the repo
+        # Beginner=0, Intermediate=1, Advanced=2
+        levels = ["Beginner", "Intermediate", "Advanced"]
+        level_bonus = 0
+        level_fit = "No Match"
+        
+        try:
+            u_idx = levels.index(user_level)
+            r_idx = levels.index(repo_info['difficulty_level'])
+            
+            diff = abs(u_idx - r_idx)
+            if diff == 0:
+                level_bonus = 20
+                level_fit = "Level: Perfect Fit"
+            elif diff == 1:
+                level_bonus = 10
+                level_fit = "Level: Close Fit"
+            else:
+                level_bonus = 0
+                level_fit = "Level: Stretch Goal"
+        except ValueError:
+            pass # just in case a weird level gets passed
+
+        # Domain Bonus
+        domain_bonus = 0
+        if user_domain != "Any" and user_domain == repo_info['domain']:
+            domain_bonus = 15
+
+        # Time Penalty
+        time_penalty = 0
+        if user_hours < repo_info['expected_weekly_hours']:
+            time_penalty = -10
+
+        # Cap it at 100% and ensure it doesn't go below 0
+        final_pct = max(min(int(raw_pct + level_bonus + domain_bonus + time_penalty), 100), 0)
+        
+        results.append({
+            'repo_name': repo_info['name'],
+            'description': repo_info['description'],
+            'github_url': repo_info['github_url'],
+            'difficulty_level': repo_info['difficulty_level'],
+            'open_issues_count': repo_info['open_issues_count'],
+            'match_percentage': final_pct,
+            'level_fit': level_fit,
+            'matched_skills': have_skills,
+            'missing_skills': miss_skills
+        })
+        
+    # sort by highest match percentage first
+    results.sort(key=lambda x: x['match_percentage'], reverse=True)
+    
+    # take top 3 and add rank
+    top_3 = results[:3]
+    for i, r in enumerate(top_3):
+        r['rank'] = i + 1
+        
+    return top_3
+</file>
+
+<file path="db/01_schema.sql">
+CREATE TABLE repositories (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    github_url VARCHAR(255) NOT NULL,
+    difficulty_level VARCHAR(50) NOT NULL,
+    open_issues_count INTEGER DEFAULT 0,
+    stars_count INTEGER DEFAULT 0,
+    domain VARCHAR(100),
+    expected_weekly_hours INTEGER DEFAULT 5
+);
+
+CREATE TABLE skills (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL
+);
+
+-- Junction table with weight (1=nice to have, 2=important, 3=core)
+CREATE TABLE repository_skills (
+    repo_id INTEGER REFERENCES repositories(id),
+    skill_id INTEGER REFERENCES skills(id),
+    weight INTEGER DEFAULT 1,
+    PRIMARY KEY (repo_id, skill_id)
+);
+</file>
+
+<file path="db/02_seed.sql">
+INSERT INTO skills (id, name) VALUES 
+(1, 'JavaScript'), (2, 'React'), (3, 'Python'), (4, 'FastAPI'), 
+(5, 'Docker'), (6, 'Kubernetes'), (7, 'PostgreSQL'), (8, 'TypeScript'),
+(9, 'Go'), (10, 'Node.js'), (11, 'Git'), (12, 'AWS'), 
+(13, 'Vue'), (14, 'Next.js');
+
+INSERT INTO repositories (id, name, description, github_url, difficulty_level, open_issues_count, domain, expected_weekly_hours) VALUES 
+(1, 'facebook/react', 'A declarative, efficient, and flexible JavaScript library for building user interfaces.', 'https://github.com/facebook/react', 'Intermediate', 1200, 'Frontend Web', 15),
+(2, 'tiangolo/fastapi', 'FastAPI framework, high performance, easy to learn, fast to code, ready for production', 'https://github.com/tiangolo/fastapi', 'Advanced', 500, 'Backend API', 10),
+(3, 'kubernetes/kubernetes', 'Production-Grade Container Scheduling and Management', 'https://github.com/kubernetes/kubernetes', 'Advanced', 2500, 'DevOps/Cloud', 20),
+(4, 'freeCodeCamp/freeCodeCamp', 'freeCodeCamp.org''s open-source codebase and curriculum.', 'https://github.com/freeCodeCamp/freeCodeCamp', 'Beginner', 280, 'Fullstack Web', 5),
+(5, 'docker/compose', 'Define and run multi-container applications with Docker', 'https://github.com/docker/compose', 'Intermediate', 850, 'DevOps/Cloud', 8),
+(6, 'vercel/next.js', 'The React Framework', 'https://github.com/vercel/next.js', 'Intermediate', 1500, 'Frontend Web', 12),
+(7, 'vuejs/core', 'Vue.js is a progressive, incrementally-adoptable JavaScript framework for building UI.', 'https://github.com/vuejs/core', 'Beginner', 400, 'Frontend Web', 10),
+(8, 'django/django', 'The Web framework for perfectionists with deadlines.', 'https://github.com/django/django', 'Intermediate', 120, 'Backend API', 15),
+(9, 'expressjs/express', 'Fast, unopinionated, minimalist web framework for node.', 'https://github.com/expressjs/express', 'Beginner', 150, 'Backend API', 8),
+(10, 'ansible/ansible', 'Ansible is a radically simple IT automation platform', 'https://github.com/ansible/ansible', 'Advanced', 3000, 'DevOps/Cloud', 15),
+(11, 'tensorflow/tensorflow', 'An Open Source Machine Learning Framework for Everyone', 'https://github.com/tensorflow/tensorflow', 'Advanced', 4000, 'AI/ML', 25),
+(12, 'pallets/flask', 'The Python micro framework for building web applications.', 'https://github.com/pallets/flask', 'Beginner', 80, 'Backend API', 5),
+(13, 'hashicorp/terraform', 'Terraform enables you to safely and predictably create, change, and improve infrastructure.', 'https://github.com/hashicorp/terraform', 'Intermediate', 1100, 'DevOps/Cloud', 10),
+(14, 'elastic/elasticsearch', 'Free and Open, Distributed, RESTful Search Engine', 'https://github.com/elastic/elasticsearch', 'Advanced', 2200, 'Backend API', 20),
+(15, 'nestjs/nest', 'A progressive Node.js framework for building efficient, scalable, and enterprise-grade apps', 'https://github.com/nestjs/nest', 'Intermediate', 300, 'Backend API', 10);
+
+INSERT INTO repository_skills (repo_id, skill_id, weight) VALUES 
+-- React
+(1, 1, 3), (1, 2, 3), (1, 8, 1),
+-- FastAPI
+(2, 3, 3), (2, 4, 3),
+-- Kubernetes
+(3, 9, 3), (3, 5, 2), (3, 6, 3),
+-- freeCodeCamp
+(4, 1, 3), (4, 10, 2), (4, 11, 2),
+-- Docker Compose
+(5, 9, 3), (5, 5, 3), (5, 3, 1),
+-- Next.js
+(6, 1, 2), (6, 2, 3), (6, 8, 3), (6, 14, 3),
+-- Vue
+(7, 1, 3), (7, 8, 3), (7, 13, 3),
+-- Django
+(8, 3, 3), (8, 7, 2),
+-- Express
+(9, 1, 3), (9, 10, 3),
+-- Ansible
+(10, 3, 3), (10, 11, 2), (10, 12, 1),
+-- TensorFlow
+(11, 3, 3),
+-- Flask
+(12, 3, 3), (12, 1, 1),
+-- Terraform
+(13, 9, 3), (13, 12, 3),
+-- Elasticsearch
+(14, 7, 1),
+-- NestJS
+(15, 8, 3), (15, 10, 3);
+</file>
+
+<file path="README.md">
+# DevMatch 🚀
+
+DevMatch is a developer-to-repository matching platform designed to help developers find the perfect open-source project to contribute to based on their specific tech stack, experience level, and domain interests.
+
+## 🛠️ Tech Stack
+- **Frontend:** React, TypeScript, Vite
+- **Backend:** Python, FastAPI
+- **Database:** PostgreSQL
+- **Infrastructure:** Docker & Docker Compose
+
+## 🧠 How the Matching Engine Works
+The core of DevMatch is a custom, math-based scoring algorithm (built in Python). It does not rely on simple keyword matching. 
+1. **Skill Weighting:** Repositories have required skills, each with a weight (1-3). If you have the skill, you gain those points.
+2. **Domain Bonus:** If your chosen domain (e.g., DevOps) matches the repository's core domain, you receive a flat +15% bonus.
+3. **Time Penalty:** If the repository expects a high time commitment (e.g., 20 hrs/week) but you only have 5 hours available, the algorithm applies a -10% penalty to prevent burnout.
+4. **Experience Level:** Matches you based on Beginner, Intermediate, or Advanced project difficulty.
+
+*Note: The dataset powering this engine was extracted from a Kaggle dataset of top open-source GitHub repositories and baked directly into the PostgreSQL seed for offline reliability and speed.*
+
+## 🐳 How to Run (Local Development)
+This project is fully containerized. You do not need to install Python, Node, or Postgres on your host machine.
+
+1. Clone the repository
+2. Make sure Docker Desktop is running
+3. Run the following command in the root directory:
+```bash
+docker-compose up --build
+```
+4. The frontend will be available at `http://localhost:3000`
+5. The backend API will be available at `http://localhost:8000`
+
+## 🔮 Future Roadmap
+- [ ] Connect to live GitHub API for real-time issue fetching
+- [ ] Add user authentication and saved matches
+- [ ] Implement ML-based embeddings for semantic skill matching
+</file>
+
+</files>

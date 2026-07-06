@@ -20,12 +20,12 @@ const API_URL = 'http://localhost:8000'
 
 function App() {
   const [skills, setSkills] = useState<string[]>([])
-  const [selected, setSelected] = useState<string[]>([])
+  const [userTechStack, setUserTechStack] = useState<string[]>([])
   const [level, setLevel] = useState('Beginner')
   const [domain, setDomain] = useState('Any')
   const [hours, setHours] = useState(5)
   
-  const [matches, setMatches] = useState<MatchedRepo[]>([])
+  const [candidateRepos, setCandidateRepos] = useState<MatchedRepo[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -33,29 +33,26 @@ function App() {
   const [repoDetails, setRepoDetails] = useState<any>(null)
   const [detailsLoading, setDetailsLoading] = useState(false)
 
-  // fetch skills on load
   useEffect(() => {
-    // using a dummy list if backend isn't running yet so we can test the UI!
-    // TODO: remove fallback once backend is up
     axios.get(`${API_URL}/skills`)
       .then(res => setSkills(res.data.skills))
       .catch(err => {
-        console.warn('Backend not running, using dummy skills for UI testing')
+        console.warn('Backend offline, defaulting to fallback skills')
         setSkills(['Python', 'JavaScript', 'React', 'Docker', 'PostgreSQL', 'Node.js', 'FastAPI', 'AWS', 'Kubernetes', 'TypeScript'])
       })
   }, [])
 
   const handleToggleSkill = (skill: string) => {
-    if (selectedRepo) return // disable if viewing details
-    if (selected.includes(skill)) {
-      setSelected(selected.filter(s => s !== skill))
+    if (selectedRepo) return
+    if (userTechStack.includes(skill)) {
+      setUserTechStack(userTechStack.filter(s => s !== skill))
     } else {
-      setSelected([...selected, skill])
+      setUserTechStack([...userTechStack, skill])
     }
   }
 
   const findMatches = async () => {
-    if (selected.length === 0) {
+    if (userTechStack.length === 0) {
       setError('Pick at least one skill first')
       return
     }
@@ -65,15 +62,15 @@ function App() {
     
     try {
       const res = await axios.post(`${API_URL}/match`, {
-        skills: selected,
+        skills: userTechStack,
         level: level,
         interest_domain: domain,
         weekly_hours: hours
       })
-      setMatches(res.data.matches)
+      setCandidateRepos(res.data.matches)
     } catch (err) {
       console.error(err)
-      setError('Could not connect to backend. Make sure it is running!')
+      setError('DevMatch Engine offline. Check if PostgreSQL container is actively serving the jtp-network.')
     } finally {
       setLoading(false)
     }
@@ -81,9 +78,8 @@ function App() {
 
   const viewDetails = async (repo: MatchedRepo) => {
      setSelectedRepo(repo)
-    setDetailsLoading(true)
+     setDetailsLoading(true)
      try{
-         // fetch mock details
        const res = await axios.get(`${API_URL}/repo/${encodeURIComponent(repo.repo_name)}/details`)
        setRepoDetails(res.data)
      }catch(e){
@@ -93,7 +89,7 @@ function App() {
      }
   }
 
-  // If a repo is selected, show the detailed view takeover!
+  if (selectedRepo) {
   if (selectedRepo) {
     return (
       <div className="container">
@@ -214,12 +210,11 @@ function App() {
       <div className="glass-panel">
         <div className="form-group">
           <label>1. What skills do you have?</label>
-          {/* Categorized Skills for a cleaner UI */}
           <div style={{marginBottom: '15px'}}>
             <strong style={{color: 'var(--text-muted)', fontSize: '0.85rem'}}>LANGUAGES</strong>
             <div className="skills-grid" style={{marginTop: '5px'}}>
               {['JavaScript', 'TypeScript', 'Python', 'Go', 'Java', 'C++', 'Rust', 'Ruby', 'PHP', 'C#'].map(s => (
-                <div key={s} className={`skill-pill ${selected.includes(s) ? 'active' : ''}`} onClick={() => handleToggleSkill(s)}>{s}</div>
+                <div key={s} className={`skill-pill ${userTechStack.includes(s) ? 'active' : ''}`} onClick={() => handleToggleSkill(s)}>{s}</div>
               ))}
             </div>
           </div>
@@ -227,7 +222,7 @@ function App() {
             <strong style={{color: 'var(--text-muted)', fontSize: '0.85rem'}}>FRONTEND</strong>
             <div className="skills-grid" style={{marginTop: '5px'}}>
               {['React', 'Vue', 'Next.js', 'Angular', 'Svelte', 'Tailwind', 'HTML/CSS'].map(s => (
-                <div key={s} className={`skill-pill ${selected.includes(s) ? 'active' : ''}`} onClick={() => handleToggleSkill(s)}>{s}</div>
+                <div key={s} className={`skill-pill ${userTechStack.includes(s) ? 'active' : ''}`} onClick={() => handleToggleSkill(s)}>{s}</div>
               ))}
             </div>
           </div>
@@ -235,7 +230,7 @@ function App() {
             <strong style={{color: 'var(--text-muted)', fontSize: '0.85rem'}}>BACKEND & INFRA</strong>
             <div className="skills-grid" style={{marginTop: '5px'}}>
               {['Node.js', 'FastAPI', 'PostgreSQL', 'Docker', 'Kubernetes', 'AWS', 'Git', 'Spring Boot', 'Django', 'MongoDB', 'Redis', 'GraphQL', 'Azure', 'GCP'].map(s => (
-                <div key={s} className={`skill-pill ${selected.includes(s) ? 'active' : ''}`} onClick={() => handleToggleSkill(s)}>{s}</div>
+                <div key={s} className={`skill-pill ${userTechStack.includes(s) ? 'active' : ''}`} onClick={() => handleToggleSkill(s)}>{s}</div>
               ))}
             </div>
           </div>
@@ -284,11 +279,11 @@ function App() {
         </button>
       </div>
 
-      {matches.length > 0 && (
+      {candidateRepos.length > 0 && (
         <div className="results">
           <h2 style={{marginBottom: '20px', color: 'var(--text-main)'}}>Top Matches</h2>
           
-          {matches.map(repo => (
+          {candidateRepos.map(repo => (
             <div key={repo.rank} className="repo-card" onClick={() => viewDetails(repo)} style={{cursor: 'pointer'}}>
               <div className="repo-header">
                 <div>
