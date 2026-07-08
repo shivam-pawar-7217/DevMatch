@@ -93,4 +93,4 @@ To be fully transparent, I used Claude/AI tools to help speed up some of the rep
 - **Data Generation:** Writing out 90 complex repositories and mapping their individual skill weights would take days. I used an AI script to help generate the raw Kaggle CSV data and the massive `02_seed.sql` file.
 - **Proofreading:** I used it to check grammar in this README.
 
-Everything else—the database schema design, the weighted scoring logic, the React frontend, and the Docker infrastructure—was built by me. I can confidently explain every single line of code in this project during the review!
+Everything else the database schema design, the weighted scoring logic, the React frontend, and the Docker infrastructure was built by me. I can confidently explain every single line of code in this project during the review!
