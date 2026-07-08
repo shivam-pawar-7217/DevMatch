@@ -52,3 +52,10 @@ To be fully transparent, I used Claude/AI tools to help speed up some of the rep
 - **Proofreading:** I used it to check grammar in this README.
 
 Everything else the database schema design, the weighted scoring logic, the React frontend, and the Docker infrastructure was built by me. I can confidently explain every single line of code in this project during the review!
+
+## 7. Demo
+
+<img width="1163" height="923" alt="image" src="https://github.com/user-attachments/assets/93e7ad53-c265-4585-9795-9b239271b342" />
+
+<img width="1143" height="923" alt="image" src="https://github.com/user-attachments/assets/052e3a65-4584-4a5f-a9d2-6569e074c7a5" />
+
