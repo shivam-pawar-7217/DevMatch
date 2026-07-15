@@ -50,12 +50,10 @@ This project was developed and extensively tested on a Windows environment using
 
 ## 7. AI Usage Declaration
 To be fully transparent, I used Claude and Gemini LLMs to assist with specific parts of this project:
-- **Frontend Development (~15%):** Used for brainstorming responsive CSS grid layouts, styling the glassmorphism UI, and debugging minor React state issues.
-- **Backend Development (~20%):** Used LLMs to help structure the initial FastAPI routing, refine SQL queries using psycopg2, and check syntax. The core weighted scoring logic was written by me.
-- **Docker & Infrastructure (~20%):** Used AI assistance to debug a complex internal Docker DNS resolution issue between the FastAPI and PostgreSQL containers.
-- **Data Generation (~80%):** Writing out 90 complex repositories and mapping individual skill weights manually would take days. I used an AI script to help generate the raw Kaggle CSV data and the resulting `02_seed.sql` file.
-
-I can confidently explain every single line of code in this project during the review!
+- **Frontend:** Brainstorming responsive CSS grid layouts and debugging minor React state issues.
+- **Backend:** Structuring initial FastAPI routing and refining SQL queries. The core scoring logic was written by me.
+- **Infrastructure:** Debugging internal Docker DNS resolution issues.
+- **Data Generation:** Automating the extraction of Kaggle data and generating the `02_seed.sql` file to populate 90 repositories.
 
 ## 8. Demo
 
