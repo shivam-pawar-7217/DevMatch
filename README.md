@@ -45,7 +45,10 @@ The project is containerized using three separate services:
 
 All containers communicate over a custom bridge network called `jtp-network`. This ensures they can resolve each other by container name. For example, the backend connects to the database using the host `db`, instead of `localhost`. The database initializes automatically by reading the seed files mounted into the `/docker-entrypoint-initdb.d/` directory.
 
-## 6. AI Usage Declaration
+## 6. Cross-Platform Testing
+This project was developed and extensively tested on a Windows environment using Docker Desktop. While it has not been physically tested on a macOS machine due to hardware unavailability, the strict use of Docker containers, standardized alpine/slim base images, and relative path volume mounting ensures it will run identically on macOS or Linux environments.
+
+## 7. AI Usage Declaration
 To be fully transparent, I used Claude/AI tools to help speed up some of the repetitive tasks in this project:
 - **Debugging Docker:** Claude helped me debug a weird DNS issue where my backend container was trying to connect to localhost instead of the `db` service name.
 - **Data Generation:** Writing out 90 complex repositories and mapping their individual skill weights would take days. I used an AI script to help generate the raw Kaggle CSV data and the massive `02_seed.sql` file.
