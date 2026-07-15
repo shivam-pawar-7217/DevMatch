@@ -49,14 +49,15 @@ All containers communicate over a custom bridge network called `jtp-network`. Th
 This project was developed and extensively tested on a Windows environment using Docker Desktop. While it has not been physically tested on a macOS machine due to hardware unavailability, the strict use of Docker containers, standardized alpine/slim base images, and relative path volume mounting ensures it will run identically on macOS or Linux environments.
 
 ## 7. AI Usage Declaration
-To be fully transparent, I used Claude/AI tools to help speed up some of the repetitive tasks in this project:
-- **Debugging Docker:** Claude helped me debug a weird DNS issue where my backend container was trying to connect to localhost instead of the `db` service name.
-- **Data Generation:** Writing out 90 complex repositories and mapping their individual skill weights would take days. I used an AI script to help generate the raw Kaggle CSV data and the massive `02_seed.sql` file.
-- **Proofreading:** I used it to check grammar in this README.
+To be fully transparent, I used Claude and Gemini LLMs to assist with specific parts of this project:
+- **Frontend Development (~15%):** Used for brainstorming responsive CSS grid layouts, styling the glassmorphism UI, and debugging minor React state issues.
+- **Backend Development (~20%):** Used LLMs to help structure the initial FastAPI routing, refine SQL queries using psycopg2, and check syntax. The core weighted scoring logic was written by me.
+- **Docker & Infrastructure (~20%):** Used AI assistance to debug a complex internal Docker DNS resolution issue between the FastAPI and PostgreSQL containers.
+- **Data Generation (~80%):** Writing out 90 complex repositories and mapping individual skill weights manually would take days. I used an AI script to help generate the raw Kaggle CSV data and the resulting `02_seed.sql` file.
 
-Everything else the database schema design, the weighted scoring logic, the React frontend, and the Docker infrastructure was built by me. I can confidently explain every single line of code in this project during the review!
+I can confidently explain every single line of code in this project during the review!
 
-## 7. Demo
+## 8. Demo
 
 <img width="1163" height="923" alt="image" src="https://github.com/user-attachments/assets/93e7ad53-c265-4585-9795-9b239271b342" />
 
